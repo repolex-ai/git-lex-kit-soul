@@ -1,0 +1,7 @@
+# git-lex kit configuration
+# This file controls how git-lex applies this kit during init.
+
+# Create a folder in the repo for each class defined in the ontology.
+# Set to true for kits where users create documents (solo, squad).
+# Set to false for kits that extract from existing structure (claude-code).
+createTypeFolders: true
