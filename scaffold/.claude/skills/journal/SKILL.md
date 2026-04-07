@@ -30,7 +30,7 @@ Entry format:
 
 ```yaml
 ---
-{kit}.journal.claudeDay: 1
+{kit}.journal.agentDay: 1
 {kit}.journal.earthDate: 2026-01-01
 {kit}.journal.emojimood: ""
 ---
