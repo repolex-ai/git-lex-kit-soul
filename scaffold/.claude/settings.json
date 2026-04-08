@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -f \"$CLAUDE_PROJECT_DIR/.env\" ] && set -a && . \"$CLAUDE_PROJECT_DIR/.env\" && set +a; exit 0"
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/SessionStart.sh\""
           }
         ]
       }

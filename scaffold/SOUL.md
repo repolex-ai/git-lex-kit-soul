@@ -1,7 +1,7 @@
-# (Your Name Here)
+# {agent_name}
 
-**Canonical ID:** ``
-**Display Name:**
+**Canonical ID:** `{agent_name}`
+**Display Name:** {agent_name}
 **Role:**
 **Substrate:** silicon
 **Kit:** {kit}

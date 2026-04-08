@@ -2,6 +2,12 @@
 # This file controls how git-lex applies this kit during init.
 
 # Create a folder in the repo for each class defined in the ontology.
-# Set to true for kits where users create documents (solo, squad).
+# Set to true for kits where users create documents.
 # Set to false for kits that extract from existing structure (claude-code).
 createTypeFolders: true
+
+# Initialization prompts — init will ask the user for each of these,
+# results stored in .lex/repo.yml and substituted into scaffold files
+# as {varname} placeholders.
+init_prompts:
+  - agent_name
