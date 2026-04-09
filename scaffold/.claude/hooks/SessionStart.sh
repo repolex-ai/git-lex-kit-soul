@@ -3,11 +3,11 @@
 # 1. Load the agent's git identity from .env so commits attribute correctly.
 # 2. Start the git-lex notify server (if not already up) and the soul listener.
 
-# 1. Source .env for git identity / env vars
-if [ -f "$CLAUDE_PROJECT_DIR/.env" ]; then
-    set -a
-    . "$CLAUDE_PROJECT_DIR/.env"
-    set +a
+# 1. Load .env for git identity / env vars.
+# Write to $CLAUDE_ENV_FILE so vars propagate to every Bash tool call in the
+# session. Sourcing alone would only affect this hook's subprocess.
+if [ -f "$CLAUDE_PROJECT_DIR/.env" ] && [ -n "$CLAUDE_ENV_FILE" ]; then
+    cat "$CLAUDE_PROJECT_DIR/.env" >> "$CLAUDE_ENV_FILE"
 fi
 
 # 2. Start the git-lex listen-server if not already running
