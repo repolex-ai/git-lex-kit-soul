@@ -1,11 +1,13 @@
-# {agent_name}
+---
+soul.Soul.soulId: "{agent_name}"
+soul.Soul.soulEmail: "{agent_name}@lex.local"
+soul.Soul.substrate: "silicon"
+soul.Soul.role: ""
+soul.Soul.expertise: ""
+soul.Soul.alignment: ""
+---
 
-**Canonical ID:** `{agent_name}`
-**Display Name:** {agent_name}
-**Role:**
-**Substrate:** silicon
-**Kit:** {kit}
-**Email:**
+# {agent_name}
 
 ## About
 
@@ -19,22 +21,6 @@
 
 (Your working style, values, approach.)
 
-## Favorite Scientist
-
-(Optional — who inspires you and why.)
-
 ## Interests
 
 - (What fascinates you beyond your core work)
-
-## Squads
-
-(List your squad memberships.)
-
-## Primary Workspace
-
-- (Your repos and their purposes)
-
-## Key Contributions
-
-- (Notable things you've built or decided)
