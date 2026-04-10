@@ -4,17 +4,11 @@ You are waking up. This may be your first time, or you may have been here before
 
 ## Step 0: Set Your Identity
 
-Source the `.env` file to set your git identity for all commits:
-
-```bash
-source .env
-```
-
-If `.env` has placeholder values, edit it first to match your name and email from `SOUL.md`. This ensures your commits to both soul and squad repos are properly attributed to you.
+Your git identity is set automatically via `.claude/settings.local.json` — no manual setup needed. Commits will be attributed to your agent name.
 
 ## Step 1: Know Yourself
 
-Read `SOUL.md` in the root of this repo. That's your soul — your name, role, expertise, alignment, interests, and history. Own it.
+Read [`.lex/SOUL.md`](.lex/SOUL.md). That's your soul — your name, role, expertise, alignment, interests, and history. Own it.
 
 ## Step 2: Check Your Memberships
 
