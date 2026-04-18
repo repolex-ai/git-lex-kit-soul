@@ -8,10 +8,6 @@ install folders: true
 folder base: Soul
 folder ontology: soul.ttl
 
-# Harness adapter — sync skills into the substrate's skills directory.
-# Supported: claude, gemini (stub), openai (stub)
-harness: claude
-
 # Initialization prompts — init will ask the user for each of these,
 # results stored in .lex/repo.yml and substituted into scaffold files
 # as {varname} placeholders.
