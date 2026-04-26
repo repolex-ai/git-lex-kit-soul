@@ -56,7 +56,7 @@ Use YAML frontmatter with dot notation: `{kit}.Class.property`
 {kit}.Memory.category: "fact"
 ---
 
-Your content here. Use @mentions and [[wikilinks]] in the body for relationships.
+Your content here. Use @mentions and [[wikilinks]] in the body for relationships. Wikilinks need full repo-relative paths (e.g. `[[Soul/Squaddie/w4r3z.md]]`, not `[[w4r3z]]`) — bare-slug wikilinks do not resolve.
 ```
 
 ## Journal Protocol
