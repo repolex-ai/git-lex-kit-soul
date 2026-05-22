@@ -45,7 +45,6 @@ This repo is managed by git-lex. Here's how to work:
 - **Create a new document:** `git lex create <type>` — check class template files (`__ClassName.md`) in each folder for available types and properties
 - **Save your work:** `git lex save "message"` — stages, commits, extracts frontmatter
 - **Query your knowledge:** `git lex query "SPARQL..."`
-- **Check status:** `git lex status`
 
 Always use `git lex save` instead of raw `git commit`. This ensures frontmatter extraction and SHACL validation.
 
