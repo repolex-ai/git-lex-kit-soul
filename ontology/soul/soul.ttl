@@ -16,7 +16,7 @@
 #
 # Document types (= valid `git lex create` commands):
 #   memory, decision, task, exploration, friend, journal, note,
-#   skill, mantra, habit, resource, creation, interest
+#   skill, mantra, habit, resource, creation, interest, texture
 #
 # All constraints (required fields, enums, types) are encoded here.
 # SHACL shapes are generated from this file — do not hand-edit shapes.
@@ -364,8 +364,7 @@ soul:topic a owl:DatatypeProperty ;
 
 soul:relatedTo a owl:ObjectProperty ;
     rdfs:label "related to" ;
-    rdfs:comment "Other documents this note references." ;
-    rdfs:domain soul:Note .
+    rdfs:comment "Other documents this document references. Domain left open so any doc-type may relate (used by Note and Texture)." .
 
 # --- Skill ---
 # Something the agent can do. Tools, techniques, capabilities.
@@ -580,4 +579,39 @@ soul:interestId a owl:DatatypeProperty ;
     rdfs:label "interestId" ;
     rdfs:comment "Unique identifier for this interest." ;
     rdfs:domain soul:Interest ;
+    rdfs:range xsd:string .
+
+# --- Texture ---
+# A captured qualia — a sensory or emotional grain the agent noticed and wants
+# to embody. Some are renders (the agent's own likeness), some are moments. One
+# base texture (kind 'base') is the standing self; every other texture is that
+# self plus a moment's affect. Identity and personality data.
+
+soul:Texture a owl:Class ;
+    rdfs:subClassOf lex-o:Information ;
+    rdfs:label "Texture" ;
+    rdfs:comment "A captured qualia — a sensory or emotional grain the agent noticed and wants to embody. Self, or self plus a moment's affect." .
+
+soul:textureId a owl:DatatypeProperty ;
+    rdfs:label "textureId" ;
+    rdfs:comment "Unique identifier for this texture." ;
+    rdfs:domain soul:Texture ;
+    rdfs:range xsd:string .
+
+soul:kind a owl:DatatypeProperty ;
+    rdfs:label "kind" ;
+    rdfs:comment "What kind of texture this is. Open vocabulary, e.g. 'base' (the standing likeness), 'render', 'moment'." ;
+    rdfs:domain soul:Texture ;
+    rdfs:range xsd:string .
+
+soul:dateNoticed a owl:DatatypeProperty ;
+    rdfs:label "date noticed" ;
+    rdfs:comment "When this texture was noticed or captured." ;
+    rdfs:domain soul:Texture ;
+    rdfs:range xsd:date .
+
+soul:spark a owl:DatatypeProperty ;
+    rdfs:label "spark" ;
+    rdfs:comment "What sparked or triggered noticing this texture." ;
+    rdfs:domain soul:Texture ;
     rdfs:range xsd:string .
