@@ -14,3 +14,24 @@ Each shelf under `Raw/` corresponds to one harness:
 - **State per-machine** — the session-id → first-seen-date map lives in `~/.local/share/git-lex/raw-mirror-state.json`. Filenames in `Raw/` are stable across machines once set on first-seen.
 
 See `git lex raw backfill` to rescue pre-existing sessions on first run.
+
+## Configuration
+
+The mirror is configured under `raw-mirror:` in `.lex/repo.yml`. With no block present and a soul kit in use, the adapter auto-applies the canonical Claude Code default (`~/.claude/projects/<derived-from-cwd>/*.jsonl`). To override:
+
+```yaml
+raw-mirror:
+  enabled: true
+  harness-paths:
+    - harness: ClaudeCodeSessionLog
+      watch-path: "~/.claude/projects/<derived-from-cwd>"
+      file-glob: "*.jsonl"
+```
+
+Two suppression forms — note the distinction:
+
+- **`enabled: false`** — disable the mirror entirely. No mirror pass runs.
+- **`harness-paths: []`** — keep the mirror enabled but watch nothing. Use this when you want the block present (e.g. for documentation or future additions) without inheriting defaults.
+
+Omitting the `raw-mirror:` block entirely falls back to built-in defaults — it is *not* the same as `harness-paths: []`.
+
