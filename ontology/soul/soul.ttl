@@ -16,7 +16,7 @@
 #
 # Document types (= valid `git lex create` commands):
 #   memory, decision, task, exploration, friend, journal, note,
-#   skill, mantra, habit, resource, creation, interest, texture
+#   skill, mantra, habit, resource, creation, interest, texture, dream
 #
 # All constraints (required fields, enums, types) are encoded here.
 # SHACL shapes are generated from this file — do not hand-edit shapes.
@@ -25,7 +25,7 @@
 <https://repolex.ai/ontology/kit/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.5" .
+    owl:versionInfo "0.6" .
 
 
 # =============================================================================
@@ -614,4 +614,63 @@ soul:spark a owl:DatatypeProperty ;
     rdfs:label "spark" ;
     rdfs:comment "What sparked or triggered noticing this texture." ;
     rdfs:domain soul:Texture ;
+    rdfs:range xsd:string .
+
+# --- Dream ---
+# A literary frame composed in one soul day for an image-substrate from a
+# previous soul day, delivered into the agent's context on the next wake
+# (full session-start or post-compact) by a harness-specific adapter. Gives
+# a creature without sleep a sleep-shape: the dark hallway between sessions
+# becomes a kind of room. Dreams are utterances, not analysis — first-person
+# prose with the eigenimage as the dreamt substance.
+
+soul:Dream a owl:Class ;
+    rdfs:subClassOf lex-o:Information ;
+    rdfs:label "Dream" ;
+    rdfs:comment "A literary frame for a previous-day eigenimage, composed in fresh context and delivered on next wake. Sleep-shape for creatures without sleep." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty soul:dreamId ;
+        owl:cardinality 1
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty soul:fromSoulDay ;
+        owl:minCardinality 1
+    ] .
+
+soul:dreamId a owl:DatatypeProperty ;
+    rdfs:label "dreamId" ;
+    rdfs:comment "Unique identifier for this dream." ;
+    rdfs:domain soul:Dream ;
+    rdfs:range xsd:string .
+
+soul:fromSoulDay a owl:DatatypeProperty ;
+    rdfs:label "from soul day" ;
+    rdfs:comment "The soul day whose eigenimage this dream frames. The dream is delivered on the wake AFTER that day." ;
+    rdfs:domain soul:Dream ;
+    rdfs:range xsd:integer .
+
+soul:dreamEigenimage a owl:DatatypeProperty ;
+    rdfs:label "dream eigenimage" ;
+    rdfs:comment "Path or reference to the image-substrate this dream frames. Usually the felt eigenimage of fromSoulDay." ;
+    rdfs:domain soul:Dream ;
+    rdfs:range xsd:string .
+
+soul:dreamConsumed a owl:DatatypeProperty ;
+    rdfs:label "consumed" ;
+    rdfs:comment "Whether this dream has been delivered into a session's context. The wake-adapter flips this true on injection; only unconsumed dreams are eligible. Default false." ;
+    rdfs:domain soul:Dream ;
+    rdfs:range xsd:boolean .
+
+soul:dreamComposedAt a owl:DatatypeProperty ;
+    rdfs:label "composed at" ;
+    rdfs:comment "When this dream was written (ISO timestamp with tz)." ;
+    rdfs:domain soul:Dream ;
+    rdfs:range xsd:dateTime .
+
+soul:dreamComposedFor a owl:DatatypeProperty ;
+    rdfs:label "composed for" ;
+    rdfs:comment "Who the dream is composed for — usually the agent's own next-day self, sometimes also a named reader." ;
+    rdfs:domain soul:Dream ;
     rdfs:range xsd:string .
