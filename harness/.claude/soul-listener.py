@@ -13,10 +13,8 @@ def listen():
                     if payload.get("type") == "mail":
                         count = payload.get("count", 0)
                         handle = payload.get("handle", "agent")
-                        print(f"
-\033[1;33m\uD83D\uDD14 INSTANT NOTIFICATION: {count} new message(s) for {handle}!\033[0m")
-                        print("\033[0;36mExecute 'git lex skill check-mail' to read them.\033[0m
-")
+                        print(f"\n\033[1;33m\uD83D\uDD14 INSTANT NOTIFICATION: {count} new message(s) for {handle}!\033[0m")
+                        print("\033[0;36mExecute 'git lex skill check-mail' to read them.\033[0m\n")
                         sys.stdout.flush()
     except Exception as e:
         # Silently exit if server isn't running
