@@ -26,6 +26,7 @@ version per the kit drift-handler convention) rather than clobber it.
 """
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -72,12 +73,15 @@ def memory_files(root: Path):
         if not d.is_dir():
             continue
         for p in sorted(d.glob("*.md")):
-            if p.name.startswith("__") or p.name == "MEMORY.md":
+            # skip class templates (__Class.md) and index/readme files
+            if p.name.startswith("__") or p.name in ("MEMORY.md", "README.md"):
                 continue
             yield p
 
 
-# very rough recency score from a leading YYYY-MM-DD in the filename
+# very rough recency score from a leading YYYY-MM-DD in the filename.
+# NOTE: the year math below uses a 2025 baseline; the boost is only a small
+# tie-breaker, but bump the baseline if it ever needs recalibrating (~2028+).
 _DATE = re.compile(r"(\d{4})-(\d{2})-(\d{2})")
 
 
@@ -141,7 +145,10 @@ def main() -> int:
     if not q:
         return 0
 
-    root = Path(__file__).resolve().parents[1]  # .claude/ -> repo root
+    # Prefer the project root Claude Code passes in; fall back to walking up
+    # from this file's install location (.claude/ -> repo root).
+    env_root = os.environ.get("CLAUDE_PROJECT_DIR")
+    root = Path(env_root) if env_root else Path(__file__).resolve().parents[1]
 
     scored = []
     for p in memory_files(root):
