@@ -1,4 +1,4 @@
-@prefix lex-o: <https://repolex.ai/ontology/lex-upper/> .
+@prefix lex-o: <https://repolex.ai/ontology/lex-o/> .
 @prefix soul: <https://repolex.ai/ontology/kit/soul/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -25,7 +25,7 @@
 <https://repolex.ai/ontology/kit/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.7" .
+    owl:versionInfo "0.7.1" .
 
 
 # =============================================================================
