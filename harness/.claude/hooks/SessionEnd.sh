@@ -44,7 +44,8 @@ cd "$CLAUDE_PROJECT_DIR" || exit 0
 
 if [ -n "$(git status --porcelain 2>/dev/null)" ] || \
    [ -n "$(find "$HOME/.claude/projects" -name '*.jsonl' -newer "$CLAUDE_PROJECT_DIR/.git/HEAD" 2>/dev/null | head -1)" ]; then
-    git lex save "SessionEnd auto-save" >/dev/null 2>&1 || true
+    git lex save "SessionEnd auto-save — catch latest JSONL bytes before session goes static. (reason: $MATCHER)" \
+        >/dev/null 2>&1 || true
 fi
 
 exit 0
