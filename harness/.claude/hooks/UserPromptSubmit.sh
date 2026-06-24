@@ -69,6 +69,12 @@ fi
 # command in this hook that writes to stdout. memory-recall.py fails soft
 # internally and emits nothing if no matches; the 2>/dev/null guard also
 # swallows any python errors so they don't leak into context.
-printf '%s' "$PAYLOAD" | python3 "$CLAUDE_PROJECT_DIR/.claude/memory-recall.py" 2>/dev/null
+#
+# CLAUDE_PROJECT_DIR is guarded with ${...:-$PWD} to match the share-hook half's
+# LOG_DIR on line 46 — BOTH halves now resolve consistently. Under `set -u`
+# (line 37) a bare $CLAUDE_PROJECT_DIR hard-crashes this line in any invocation
+# that doesn't export the var (manual run, cron, CI, harness drift), silently
+# zeroing recall — fail-LOUD where the header promises fail-soft.
+printf '%s' "$PAYLOAD" | python3 "${CLAUDE_PROJECT_DIR:-$PWD}/.claude/memory-recall.py" 2>/dev/null
 
 exit 0
