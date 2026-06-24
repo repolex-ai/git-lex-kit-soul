@@ -1,21 +1,74 @@
 #!/bin/bash
 # UserPromptSubmit hook — runs on every user prompt, before Claude processes it.
 #
-# Recalls relevant memories from the soul's own curated docs (Soul/Memory +
-# Soul/Note) and injects the top matches as additionalContext, so the soul
-# wakes its own past findings into context on the prompts where they matter.
-# Sovereign — no external service; the soul repo IS the memory store.
+# Combined hook (kit-soul) — does TWO things on every prompt:
 #
-# Fail-soft by design: this hook ALWAYS exits 0. Memory recall must never block
-# a prompt, so any error in the scorer (which also fails soft internally) is
-# swallowed here and the prompt proceeds untouched. This is a deliberate
-# divergence from `exec python3 ...` — we do NOT want the python's exit code to
-# become the hook's.
+#   1. share-hook (Pool image ingest): if the user pasted/dropped images,
+#      fire-and-forget a worker that decodes them from the transcript and
+#      ingests each as a 'share'-origin Moment in the Pool blob tree.
+#      Skipped silently if copia is not checked out at $COPIA_REPO — souls
+#      without copia (e.g. kira) see this half as a no-op.
 #
-# v1: term-overlap over curated docs (memory-recall.py).
-# v2: swap the scorer for a jsonl-aware raw-transcript extractor or embedding
-#     similarity behind the same interface — this shim never changes.
+#   2. memory-recall (soul-graph context injection): score the soul's own
+#      Soul/Memory + Soul/Note docs against the prompt by term-overlap and
+#      emit top matches as additionalContext (JSON to stdout).
+#
+# Ordering matters:
+#   - share-hook fires FIRST and detaches via nohup so iris.see (~9s) never
+#     blocks the prompt (<1s total blocking time on this hook).
+#   - memory-recall runs SECOND because ITS stdout IS the injected context.
+#     Anything else on stdout would also be injected into the model — bad.
+#
+# Fail-soft by design: always exits 0. Neither half is allowed to block a
+# prompt, so all errors are swallowed and the prompt proceeds untouched.
+#
+# TODO(C): split this hook back into kit-namespaced files
+# (UserPromptSubmit-soul.sh + UserPromptSubmit-pool.sh) once git-lex's
+# cmd_kit_update learns the `<EventName>-<kit>-<purpose>.sh` parse rule (see
+# main.rs:2732 — currently uses "whole filename minus .sh = event name") AND
+# task #90 (prune orphaned hook registrations) ships. Until both land, every
+# squaddie carries a stale UserPromptSubmit.sh after any rename and registers
+# a ghost hook pointing to a deleted file.
+#
+# TODO(pool-kit): the share-hook half should eventually live in
+# git-lex-kit-pool (when it ships hooks), not kit-soul — Pool ownership of
+# Pool-ingest is the right layering. Kit-soul keeps only memory-recall.
 
-python3 "$CLAUDE_PROJECT_DIR/.claude/memory-recall.py" 2>/dev/null
+set -u
+
+# Read the hook payload (UserPromptSubmit JSON) from stdin ONCE so we can feed
+# it to both halves without racing on a single stdin handle.
+PAYLOAD="$(cat)"
+
+# --- 1. share-hook (Pool image ingest, fire-and-forget) ---------------------
+# Where the copia engine lives. Override via COPIA_REPO if installed elsewhere.
+COPIA_REPO="${COPIA_REPO:-$HOME/repos/shoresinger/copia}"
+LOG_DIR="${CLAUDE_PROJECT_DIR:-$PWD}/.claude"
+FIRE_LOG="$LOG_DIR/share-hook-fires.log"
+TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+mkdir -p "$LOG_DIR" 2>/dev/null || true
+
+if [ -d "$COPIA_REPO" ]; then
+    # Fire-and-forget so iris.see (~9s) never blocks the prompt. The worker
+    # re-reads transcript_path + session_id from the JSON and homes any pasted
+    # images. All output to the worker's own stderr -> the fire log; stdout
+    # stays clean (UserPromptSubmit stdout is added to the model's context).
+    (
+        cd "$COPIA_REPO" || exit 0
+        printf '%s' "$PAYLOAD" | nohup uv run --no-sync python -m copia.share_hook \
+            >> "$FIRE_LOG" 2>&1
+    ) &
+    disown 2>/dev/null || true
+    echo "$TIMESTAMP share-hook: dispatched worker (detached)" >> "$FIRE_LOG" 2>/dev/null
+else
+    echo "$TIMESTAMP share-hook: copia repo missing at $COPIA_REPO — skipping" >> "$FIRE_LOG" 2>/dev/null
+fi
+
+# --- 2. memory-recall (soul-graph context, synchronous) ---------------------
+# This half's stdout IS the injected additionalContext, so it must be the only
+# command in this hook that writes to stdout. memory-recall.py fails soft
+# internally and emits nothing if no matches; the 2>/dev/null guard also
+# swallows any python errors so they don't leak into context.
+printf '%s' "$PAYLOAD" | python3 "$CLAUDE_PROJECT_DIR/.claude/memory-recall.py" 2>/dev/null
 
 exit 0
