@@ -23,7 +23,7 @@
 # render server. This POSTs in milliseconds, detached, and can't stall the turn.
 #
 # Wire (Day-92 contract, validated by the Door's §10b enqueue-validation):
-#   source="conversational", mode="compose_render_see"
+#   origin="conversational-private", mode="compose_render_see"
 #   conversation_chunk = the RAW recent-turn text  ← TOP-LEVEL field (the Door requires
 #       one of {conversation_chunk, chevron, compose_text} at the top of the POST, NOT
 #       inside brief_blob; it folds the matched field into the brief_blob the worker
@@ -102,7 +102,7 @@ except Exception:
 # transcript_path stays in brief_blob as provenance.
 brief = {"transcript_path": tp}
 print(json.dumps({
-    "source": "conversational",
+    "origin": "conversational-private",
     "mode": "compose_render_see",
     "brief_blob": json.dumps(brief),
     "conversation_chunk": conversation,
