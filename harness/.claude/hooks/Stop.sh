@@ -26,11 +26,11 @@
 #   origin="conversational-private", mode="compose_render_see"
 #   conversation_chunk = the RAW recent-turn text  ← TOP-LEVEL field (the Door requires
 #       one of {conversation_chunk, chevron, compose_text} at the top of the POST, NOT
-#       inside brief_blob; it folds the matched field into the brief_blob the worker
-#       reads). Sending it inside brief_blob → enqueue_invalid (this was the ~90-min
+#       inside payload; it folds the matched field into the payload the worker
+#       reads). Sending it inside payload → enqueue_invalid (this was the ~90-min
 #       conv outage on Day 92: the Door's validator went live while the hook still sent
-#       brief_blob.conversation, so every fire bounced silently).
-#   brief_blob = {transcript_path}  ← durable provenance handle; the worker parses it.
+#       payload.conversation, so every fire bounced silently).
+#   payload = {transcript_path}  ← durable provenance handle; the worker parses it.
 #
 # Fail-soft by design: always exits 0. The enqueue is milliseconds, but we still
 # detach so even a slow disk can't stall the turn.
@@ -63,7 +63,7 @@ SOUL_GENESIS="$(git -C "$PROJECT_DIR" rev-list --max-parents=0 HEAD 2>/dev/null 
 # Build the enqueue body with stdlib python3 only (NO copia). We grab the recent
 # conversation text RAW from the JSONL transcript and hand it over as a TOP-LEVEL
 # conversation_chunk — we do NOT parse chevrons or cast (the worker owns all of that).
-# Capturing the text now makes it rotation-proof. brief_blob is JSON-encoded to a
+# Capturing the text now makes it rotation-proof. payload is JSON-encoded to a
 # string (Door stores it in a TEXT col).
 BODY="$(TRANSCRIPT="$TRANSCRIPT" python3 <<'PY'
 import json, os
@@ -98,14 +98,14 @@ except Exception:
     conversation = ""
 
 # Day-92 contract: conversation rides as TOP-LEVEL conversation_chunk (the Door
-# validates it there, then folds it into the brief_blob the worker reads).
-# transcript_path stays in brief_blob as provenance.
+# validates it there, then folds it into the payload the worker reads).
+# transcript_path stays in payload as provenance.
 brief = {"transcript_path": tp}
 print(json.dumps({
     "origin": "conversational-private",
     "mode": "compose_render_see",
-    "brief_blob": json.dumps(brief),
-    "conversation_chunk": conversation,
+    "payload": json.dumps(brief),
+    "conversation-chunk": conversation,
 }))
 PY
 )"

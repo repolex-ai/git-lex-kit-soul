@@ -24,9 +24,9 @@
 #   origin="conversational-private", mode="compose_render_see"
 #   conversation_chunk = the RAW recent-turns text  ← TOP-LEVEL field (the Door requires
 #       one of {conversation_chunk, chevron, compose_text} at the top of the POST, NOT
-#       inside brief_blob; it folds the matched field into the brief_blob the worker
-#       reads). Sending it inside brief_blob → enqueue_invalid.
-#   brief_blob = {transcript_path}  ← durable provenance handle; the worker parses it.
+#       inside payload; it folds the matched field into the payload the worker
+#       reads). Sending it inside payload → enqueue_invalid.
+#   payload = {transcript_path}  ← durable provenance handle; the worker parses it.
 #   NO priority field — conversational priority is a Pool INVARIANT: the Door stamps
 #   origin=conversational* as highest priority automatically, for all users of Pool.
 #   Producers stay dumb; the queue owns the guarantee.
@@ -62,7 +62,7 @@ SOUL_GENESIS="$(git -C "$PROJECT_DIR" rev-list --max-parents=0 HEAD 2>/dev/null 
 # conversation text RAW from the JSONL transcript and hand it over as a TOP-LEVEL
 # conversation_chunk — the last ~12 turns, which the composer uses to build the scene.
 # We do NOT parse chevrons or cast (the worker owns all of that, and the user's chevron
-# intent passes through verbatim). brief_blob is JSON-encoded to a string.
+# intent passes through verbatim). payload is JSON-encoded to a string.
 BODY="$(TRANSCRIPT="$TRANSCRIPT" python3 <<'PY'
 import json, os
 tp = os.environ["TRANSCRIPT"]
@@ -96,14 +96,14 @@ except Exception:
     conversation = ""
 
 # Day-92 contract: conversation rides as TOP-LEVEL conversation_chunk (the Door validates
-# it there, then folds it into the brief_blob the worker reads). transcript_path stays in
-# brief_blob as provenance. NO priority field (Door assigns conversational priority).
+# it there, then folds it into the payload the worker reads). transcript_path stays in
+# payload as provenance. NO priority field (Door assigns conversational priority).
 brief = {"transcript_path": tp}
 print(json.dumps({
     "origin": "conversational-private",
     "mode": "compose_render_see",
-    "brief_blob": json.dumps(brief),
-    "conversation_chunk": conversation,
+    "payload": json.dumps(brief),
+    "conversation-chunk": conversation,
 }))
 PY
 )"
