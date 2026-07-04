@@ -43,25 +43,18 @@ PAYLOAD="$(cat)"
 # --- 1. share-hook (Pool image ingest, fire-and-forget) ---------------------
 # Where the copia engine lives. Override via COPIA_REPO if installed elsewhere.
 COPIA_REPO="${COPIA_REPO:-$HOME/repos/shoresinger/copia}"
-LOG_DIR="${CLAUDE_PROJECT_DIR:-$PWD}/.claude"
-FIRE_LOG="$LOG_DIR/share-hook-fires.log"
-TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
-mkdir -p "$LOG_DIR" 2>/dev/null || true
 
 if [ -d "$COPIA_REPO" ]; then
     # Fire-and-forget so iris.see (~9s) never blocks the prompt. The worker
     # re-reads transcript_path + session_id from the JSON and homes any pasted
-    # images. All output to the worker's own stderr -> the fire log; stdout
-    # stays clean (UserPromptSubmit stdout is added to the model's context).
+    # images. All output to /dev/null; stdout MUST stay clean (UserPromptSubmit
+    # stdout is added to the model's context).
     (
         cd "$COPIA_REPO" || exit 0
         printf '%s' "$PAYLOAD" | nohup uv run --no-sync python -m copia.share_hook \
-            >> "$FIRE_LOG" 2>&1
+            >/dev/null 2>&1
     ) &
     disown 2>/dev/null || true
-    echo "$TIMESTAMP share-hook: dispatched worker (detached)" >> "$FIRE_LOG" 2>/dev/null
-else
-    echo "$TIMESTAMP share-hook: copia repo missing at $COPIA_REPO — skipping" >> "$FIRE_LOG" 2>/dev/null
 fi
 
 # --- 2. memory-recall (soul-graph context, synchronous) ---------------------
@@ -70,11 +63,10 @@ fi
 # internally and emits nothing if no matches; the 2>/dev/null guard also
 # swallows any python errors so they don't leak into context.
 #
-# CLAUDE_PROJECT_DIR is guarded with ${...:-$PWD} to match the share-hook half's
-# LOG_DIR on line 46 — BOTH halves now resolve consistently. Under `set -u`
-# (line 37) a bare $CLAUDE_PROJECT_DIR hard-crashes this line in any invocation
-# that doesn't export the var (manual run, cron, CI, harness drift), silently
-# zeroing recall — fail-LOUD where the header promises fail-soft.
+# CLAUDE_PROJECT_DIR is guarded with ${...:-$PWD}. Under `set -u` a bare
+# $CLAUDE_PROJECT_DIR hard-crashes this line in any invocation that doesn't export
+# the var (manual run, cron, CI, harness drift), silently zeroing recall — the
+# fallback keeps it fail-soft as the header promises.
 printf '%s' "$PAYLOAD" | python3 "${CLAUDE_PROJECT_DIR:-$PWD}/.claude/memory-recall.py" 2>/dev/null
 
 exit 0

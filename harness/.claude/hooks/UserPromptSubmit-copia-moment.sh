@@ -39,10 +39,6 @@ set -u
 
 POOL_SERVE_URL="${POOL_SERVE_URL:-http://127.0.0.1:8424}"
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$PWD}"
-LOG_DIR="$PROJECT_DIR/.claude"
-FIRE_LOG="$LOG_DIR/moment-hook-fires.log"
-TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
-mkdir -p "$LOG_DIR" 2>/dev/null || true
 
 # Read the UserPromptSubmit payload (carries transcript_path).
 PAYLOAD="$(cat)"
@@ -50,7 +46,6 @@ TRANSCRIPT="$(printf '%s' "$PAYLOAD" | python3 -c \
   'import json,sys; print(json.load(sys.stdin).get("transcript_path",""))' 2>/dev/null)"
 
 if [ -z "$TRANSCRIPT" ]; then
-    echo "$TIMESTAMP moment-hook(UserPromptSubmit): no transcript_path in payload — skipping" >> "$FIRE_LOG" 2>/dev/null
     exit 0
 fi
 
@@ -112,17 +107,15 @@ PY
 QS=""
 [ -n "$SOUL_GENESIS" ] && QS="?soul=$SOUL_GENESIS"
 
-# Fire-and-forget: ONE POST to the Pool Door, detached + clean stdout so it can't hang or
-# pollute context.
+# Fire-and-forget: ONE POST to the Pool Door, detached + all output to /dev/null so it
+# can't hang or pollute context.
 (
     curl -s --max-time 10 -X POST \
         "$POOL_SERVE_URL/queue/enqueue$QS" \
         -H "Content-Type: application/json" \
-        -d "$BODY" >> "$FIRE_LOG" 2>&1
+        -d "$BODY" >/dev/null 2>&1
 ) &
 disown 2>/dev/null || true
-
-echo "$TIMESTAMP moment-hook(UserPromptSubmit): enqueued conversational soul=${SOUL_GENESIS:-<default>} transcript=$TRANSCRIPT" >> "$FIRE_LOG" 2>/dev/null
 
 # NEVER write to stdout (UserPromptSubmit stdout is injected into context). Exit fast.
 exit 0
