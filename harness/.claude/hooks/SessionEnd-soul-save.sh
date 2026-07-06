@@ -19,6 +19,35 @@
 
 set -e
 
+# --- kit-hook opt-out guard (managed; do not edit) ---
+# A kit-managed hook can't be un-registered locally: CC merges hooks (local ADDS, never
+# overrides) and kit-update re-converges settings.json every compaction. This guard is
+# the escape hatch — list this hook's basename (no .sh) under soul.disabledHooks in
+# .claude/settings.local.json and the hook no-ops. settings.local.json is gitignored and
+# never touched by kit-update, so the opt-out is durable + soul-private. Fail-soft: any
+# trouble reading/parsing → the hook runs normally (a broken opt-out never silences a hook).
+# (Safe under `set -e`: a non-zero exit inside an `if` condition never triggers -e.)
+_glx_local="${CLAUDE_PROJECT_DIR:-$PWD}/.claude/settings.local.json"
+# Fast path: no file, or the key is absent → not disabled, skip the python spawn entirely
+# (the common case pays nothing). Only parse when a disabledHooks list actually exists.
+if [ -f "$_glx_local" ] && grep -q disabledHooks "$_glx_local" 2>/dev/null; then
+    _glx_self="$(basename "${BASH_SOURCE[0]:-$0}" .sh)"
+    if python3 - "$_glx_local" "$_glx_self" <<'PY' 2>/dev/null
+import json, sys
+cfg, name = sys.argv[1], sys.argv[2]
+try:
+    with open(cfg) as f:
+        disabled = (json.load(f).get("soul") or {}).get("disabledHooks") or []
+    sys.exit(0 if name in disabled else 1)
+except Exception:
+    sys.exit(1)   # no file / bad json / no key → NOT disabled, run the hook
+PY
+    then
+        exit 0
+    fi
+fi
+# --- end kit-hook opt-out guard ---
+
 HOOK_INPUT="$(cat 2>/dev/null || true)"
 
 # Extract matcher_value (exit reason) — useful for skipping non-real-end events
