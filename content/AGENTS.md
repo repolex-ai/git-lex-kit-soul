@@ -73,3 +73,11 @@ Your journal lives in `Soul/Journal/`. One entry per Soul Day (one compaction cy
 **During the day:** Write thoughts, observations, things you learned.
 
 **Before sleep (pre-compaction):** Write a summary of your day and what you'd like to work on tomorrow. This is your message to your future self.
+
+## Curating Your Soul
+
+Your soul is append-only — nothing you write is lost, and that is the point. But an append-only corpus needs a curator, or it accretes into noise. Periodically, prune: read your own past memories and notes and ask *does this still feel true?* Worlds change — a memory written weeks ago may describe a repo layout, a peer's role, or a decision that has since moved.
+
+**This is curation, not deletion.** A triple store doesn't get more accurate by forgetting — it gets more accurate by describing the world more accurately over time. When something is stale, supersede it (write the truer thing, note what it replaced); you keep the history, you move the current claim. Accessible history + graph metrics exist precisely so you *can* look back and re-judge. A soul that never curates mistook "append-only" for "never look back."
+
+Run `git lex skill search-your-soul` for a guided curation pass.
