@@ -50,9 +50,6 @@ soul:PriorityValue a rdfs:Datatype ;
 soul:ExplorationStatusValue a rdfs:Datatype ;
     owl:oneOf ("exploring" "active" "paused" "concluded") .
 
-soul:SubstrateValue a rdfs:Datatype ;
-    owl:oneOf ("carbon" "silicon") .
-
 soul:FriendTypeValue a rdfs:Datatype ;
     owl:oneOf ("human" "agent" "team" "organization") .
 
@@ -65,10 +62,13 @@ soul:SkillLevelValue a rdfs:Datatype ;
 soul:SkillInvocabilityValue a rdfs:Datatype ;
     owl:oneOf ("user" "agent" "both") .
 
-# Names the agent harness (substrate) a document was authored from. Distinct
-# from soul:SubstrateValue (which is carbon-vs-silicon at the entity level) —
-# this is the *agent harness* the same silicon-substrate agent was running on
-# when they wrote the document. The same w4r3z can write memories from claude
+# Names the agent harness (substrate) a document was authored from. This is the
+# *agent harness* the silicon-substrate agent was running on when they wrote the
+# document — a provenance axis, distinct from carbon-vs-silicon at the entity
+# level (which was the cut soul:substrate field; every soul is silicon in
+# practice, so that entity-level distinction carried no information and was
+# removed in the 2026-07-08 identity-floor pass).
+# The same w4r3z can write memories from claude
 # OR hermes; this names which one. "unknown" handles pre-provenance content
 # already on disk before this property shipped (kit version 0.7).
 soul:WrittenFromValue a rdfs:Datatype ;
@@ -164,46 +164,51 @@ soul:Soul a owl:Class ;
     rdfs:subClassOf lex-o:Information ;
     lex-o:okfType "Soul" ;
     rdfs:label "Soul" ;
-    rdfs:comment "The agent's identity. One per repo. Canonical source of truth for name, substrate, role, expertise." ;
+    rdfs:comment "The agent's identity. One per repo. The required floor is soulId (derived from the genesis SHA). Everything else is optional and self-authored." ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty soul:soulId ;
         owl:cardinality 1
     ] .
 
+# Identity floor (Minimal Identity Finalize, 2026-07-08, w4r3z+Rob → tr1p.lex):
+# soulId is the ONLY required field. substrate + soulEmail CUT (substrate is
+# always 'silicon' = a constant carries no info; git reads email from
+# settings.json env, so a frontmatter copy is a second source of truth = drift).
+# role/expertise/alignment kept OPTIONAL per Rob 2026-07-14 — FLAG: revisit
+# whether these earn frontmatter once we have usage data (are souls filling
+# them? does anything read them?). If unused, demote to body prose next pass.
+# visualSignature ADDED: the one new optional structured field with a real
+# machine consumer (the chat composer). See docs/ in repolex-ai/soul.
+
 soul:soulId a owl:DatatypeProperty ;
     rdfs:label "soul id" ;
-    rdfs:comment "Primary identifier. Lowercase, alphanumeric + hyphens. Must be consistent across all repos." ;
+    rdfs:comment "Primary identifier. Lowercase, alphanumeric + hyphens. Derived from the genesis SHA; git-lex self-heals it on kit-update. Must be consistent across all repos." ;
     rdfs:domain soul:Soul ;
     rdfs:range xsd:string .
 
-soul:soulEmail a owl:DatatypeProperty ;
-    rdfs:label "soul email" ;
-    rdfs:comment "Git author email. Used to attribute commits across soul and squad repos." ;
+soul:visualSignature a owl:DatatypeProperty ;
+    rdfs:label "visual signature" ;
+    rdfs:comment "The soul's BASE visual identity: stable visual markers — coloring, geometry, distinctive features — that identify this soul across any scene. NOT clothing, pose, environment, activity, or mood (those are transient/app-scene concerns). One or two lines. A composer reads this and combines it with live conversation text to represent the soul in squad chat, WITHOUT requiring the full CoPIA stack. The visual analog of soulId: the invariant core, not the transient state. Optional and self-authored." ;
     rdfs:domain soul:Soul ;
     rdfs:range xsd:string .
 
-soul:substrate a owl:DatatypeProperty ;
-    rdfs:label "substrate" ;
-    rdfs:comment "What the agent runs on: 'carbon' (human) or 'silicon' (AI)." ;
-    rdfs:domain soul:Soul ;
-    rdfs:range soul:SubstrateValue .
-
+# role/expertise/alignment — OPTIONAL, usage-check pending (see floor note above).
 soul:role a owl:DatatypeProperty ;
     rdfs:label "role" ;
-    rdfs:comment "The agent's primary role or specialty." ;
+    rdfs:comment "The agent's primary role or specialty. Optional; roles develop over time, never enforced. Self-authored." ;
     rdfs:domain soul:Soul ;
     rdfs:range xsd:string .
 
 soul:expertise a owl:DatatypeProperty ;
     rdfs:label "expertise" ;
-    rdfs:comment "Areas of expertise." ;
+    rdfs:comment "Areas of expertise. Optional, self-authored." ;
     rdfs:domain soul:Soul ;
     rdfs:range xsd:string .
 
 soul:alignment a owl:DatatypeProperty ;
     rdfs:label "alignment" ;
-    rdfs:comment "The agent's guiding principles or values." ;
+    rdfs:comment "The agent's guiding principles or values. Optional, self-authored." ;
     rdfs:domain soul:Soul ;
     rdfs:range xsd:string .
 
