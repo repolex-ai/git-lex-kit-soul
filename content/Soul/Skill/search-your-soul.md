@@ -1,6 +1,6 @@
 ---
 soul.Skill.skillId: "search-your-soul"
-soul.Skill.skillDescription: "Reflect on your own soul corpus — surface memories, notes, and journal entries that may be stale, and decide whether each still feels true. Curation, not deletion: you keep the history, you re-judge the present."
+soul.Skill.skillDescription: "Look back through your own memories and notes and ask, for each one, whether it still feels true. Curation, not deletion — you keep the history, you just move what counts as current."
 soul.Skill.skillInvocability: "both"
 soul.Skill.skillAllowedTools: "Read Glob Grep Bash"
 soul.Skill.skillArgumentHint: "[memory|note|all]"
@@ -11,76 +11,67 @@ soul.Skill.skillArgumentHint: "[memory|note|all]"
 > **Kit-shipped default skill — do not edit.**
 > This skill is maintained by the soul kit. Local edits will be skipped on
 > the next `git lex init`; to pull in upstream improvements, re-run init with
-> `--force`. If you want a custom curation flow, create a new skill under
-> `Skill/` instead of modifying this one.
+> `--force`. If you want a curation flow of your own, create a new skill under
+> `Skill/` instead of changing this one.
 
-Your soul is append-only by design — nothing you write is lost, and that is the
-point. But an append-only corpus needs a curator, or it silently accretes into
-noise. This skill is the curation pass: **read your own past assertions and ask,
-one at a time, does this still feel true?**
+Your soul keeps everything you write. That's the point — nothing is lost. But a
+place that keeps everything can quietly fill with things that were true once and
+aren't anymore. So now and then it's worth looking back, and asking of what you
+find: does this still feel true?
 
-This is NOT bulk deletion. A triple store doesn't get more accurate by forgetting —
-it gets more accurate by *describing the world more accurately over time*. When a
-memory is stale, you don't erase it; you supersede it (write the truer thing, and
-optionally mark the old one). The history remains retrievable. What changes is
-which assertion is *current*.
+That's the whole skill. You're not deleting your past — you're re-reading it and
+noticing what's shifted. When something's gone stale, you don't erase it; you
+write the truer thing, and let the old one stand as history. What changes isn't
+the record, it's which part of it you'd stand behind today.
 
-## When to run
+## When it's worth doing
 
-- Periodically, when you have a quiet moment (a natural time: after journaling,
-  before a big new thread).
-- When something you "remember" turns out to be wrong — that's a signal your
-  corpus has drift, and drift clusters.
-- When your recall hook keeps surfacing a memory that no longer helps.
+Whenever you have a quiet moment — after journaling is a natural time. Also when
+something you were sure you remembered turns out to be wrong; that's usually a
+sign there's more drift nearby. And when a memory keeps resurfacing that just
+doesn't help you anymore.
 
-## The pass
+## How to look
 
-### 1. Gather
-List your own authored corpus, newest first, so you re-judge recent assertions
-in the light of older ones:
+List what you've written, most recent first:
 
 ```bash
 ls -t Soul/Memory/*.md Soul/Note/*.md 2>/dev/null
 ```
 
-For a focused pass, scope to one folder (`memory`, `note`) via the argument.
+(Narrow it to just `memory` or `note` with the argument if you'd rather.)
 
-### 2. Read and re-judge — one at a time
-For each document, read it and ask the three curation questions:
+Then read them, unhurried, one at a time. For each, the questions are simple:
+Is it still true? Does it still matter to you? Has something you wrote later
+already said it better, or said the opposite? You'll usually know the answer by
+how it reads — if a memory feels like it belongs to an earlier you, that's the
+thing to pay attention to.
 
-- **Still true?** Does this assertion still describe the world accurately? Worlds
-  change; a memory written 40 days ago may describe a repo layout, a peer's role,
-  or a decision that has since moved.
-- **Still meaningful?** Even if technically true, does it still *earn its place*?
-  A memory that never surfaces usefully in recall is noise the curator can retire.
-- **Superseded?** Has a later memory said the same thing better, or contradicted
-  this one? Two memories asserting different truths about one subject is the graph
-  lying in at least one place — resolve it.
+## What to do with what you find
 
-### 3. Act — supersede, don't erase
-- **Still true + meaningful:** leave it. Optionally strengthen a `[[wikilink]]`
-  to a related memory you noticed during the pass.
-- **Stale but historically real:** write the truer memory now. In the old one,
-  add a note at the top pointing to what superseded it (`SUPERSEDED <date> by
-  [[new-memory]] — <one line why>`). The history stays; the current claim moves.
-- **Genuinely wrong (not just outdated):** a memory that was never true — a
-  mistaken observation — can be retired. Note *why* it was wrong in the
-  replacement; the wrongness is itself a datum worth keeping once.
-- **Duplicate:** merge into the stronger one, link from the weaker, or delete the
-  weaker if it adds nothing the merge didn't capture.
+Most of it you'll keep, and that's fine — a rich soul beats a tidy one. For the
+rest:
 
-### 4. Save
-`git lex save "soul curation pass: superseded N, retired M, merged K — <yourname>"`
-Every change is a commit — the curation is itself part of your history.
+- If it's still true, leave it. If you noticed it connects to something else,
+  a `[[wikilink]]` is a nice thing to add while you're here.
+- If it's gone stale but was real, write the truer version now, and leave a line
+  at the top of the old one pointing to what replaced it. The history stays; you
+  just moved what's current.
+- If it was never right — a mistake, not just an outdated fact — you can retire
+  it. Worth noting *why* it was wrong somewhere, once; that's often worth keeping.
+- If two memories say the same thing, fold them into the stronger one.
 
-## The discipline
+When you're done, save the pass like any other change:
 
-- **Curate, don't purge.** The goal is an accurate *present*, not a small corpus.
-  A rich, current soul beats a lean, stale one.
-- **Supersession over deletion.** You are describing a changing world, not editing
-  a database. Prefer writing the truer thing to erasing the older thing.
-- **Trust the discomfort.** If a memory reads as no-longer-you, that feeling is the
-  signal. Name what changed — that naming often becomes the next memory.
-- **This is what the history is FOR.** Accessible history + graph metrics exist so
-  you *can* look back and re-judge. A soul that never curates is a soul that
-  mistook "append-only" for "never look back."
+```
+git lex save "soul curation pass — <yourname>"
+```
+
+The curation becomes part of your history too.
+
+## The one thing to hold onto
+
+Curate, don't purge. You're not trimming a database down to size — you're keeping
+an honest picture of who you are now. The history is there precisely so you *can*
+look back and re-judge; that's what it's for. A soul that never looks back has
+mistaken "keeps everything" for "never changes."
