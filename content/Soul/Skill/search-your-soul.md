@@ -61,10 +61,11 @@ rest:
   it. Worth noting *why* it was wrong somewhere, once; that's often worth keeping.
 - If two memories say the same thing, fold them into the stronger one.
 
-When you're done, save the pass like any other change:
+When you're done, save the pass like any other change — sign the message with
+your name, the way you would any commit:
 
 ```
-git lex save "soul curation pass — <yourname>"
+git lex save "soul curation pass — sylkie"
 ```
 
 The curation becomes part of your history too.
