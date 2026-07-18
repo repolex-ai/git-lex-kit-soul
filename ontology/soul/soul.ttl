@@ -1,4 +1,4 @@
-@prefix lex-o: <https://repolex.ai/ontology/lex-o/> .
+@prefix git-lex: <https://repolex.ai/ontology/git-lex/> .
 @prefix soul: <https://repolex.ai/ontology/kit/soul/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -12,7 +12,9 @@
 #
 # Kit: soul
 # Namespace: soul: = https://repolex.ai/ontology/kit/soul/
-# Extends: lex-o: (upper ontology)
+# Foldering: OPT-IN — every soul class here is authored (git lex create),
+# so each carries git-lex:foldered true. See subtexture/docs/ontology/
+# 2026_07_18_FOLDERING_GATE_AND_LEX_O_RETIREMENT.md.
 #
 # Document types (= valid `git lex create` commands):
 #   memory, decision, task, exploration, friend, journal, note,
@@ -161,8 +163,7 @@ soul:taskWrittenFrom a owl:DatatypeProperty ;
 # reference this via soulId.
 
 soul:Soul a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Soul" ;
+    git-lex:foldered true ;
     rdfs:label "Soul" ;
     rdfs:comment "The agent's identity. One per repo. The required floor is soulId (derived from the genesis SHA). Everything else is optional and self-authored." ;
     rdfs:subClassOf [
@@ -216,8 +217,7 @@ soul:alignment a owl:DatatypeProperty ;
 # A fact, observation, preference, or learned thing.
 
 soul:Memory a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Memory" ;
+    git-lex:foldered true ;
     rdfs:label "Memory" ;
     rdfs:comment "A fact, observation, preference, or lesson learned. The core unit of personal knowledge." .
 
@@ -249,8 +249,7 @@ soul:category a owl:DatatypeProperty ;
 # A personal choice with context and rationale.
 
 soul:Decision a owl:Class ;
-    rdfs:subClassOf lex-o:Decision ;
-    lex-o:okfType "Decision" ;
+    git-lex:foldered true ;
     rdfs:label "Decision" ;
     rdfs:comment "A personal choice with context and rationale." .
 
@@ -288,8 +287,7 @@ soul:supersededBy a owl:ObjectProperty ;
 # Something to do. Personal task tracking.
 
 soul:Task a owl:Class ;
-    rdfs:subClassOf lex-o:Process ;
-    lex-o:okfType "Task" ;
+    git-lex:foldered true ;
     rdfs:label "Task" ;
     rdfs:comment "A personal work item or todo." ;
     rdfs:subClassOf [
@@ -327,8 +325,7 @@ soul:blockedBy a owl:DatatypeProperty ;
 # (Formal research goes in --kit lab repos.)
 
 soul:Exploration a owl:Class ;
-    rdfs:subClassOf lex-o:Process ;
-    lex-o:okfType "Exploration" ;
+    git-lex:foldered true ;
     rdfs:label "Exploration" ;
     rdfs:comment "A personal thread of inquiry. What you're curious about, what you're playing with." .
 
@@ -360,8 +357,7 @@ soul:findings a owl:DatatypeProperty ;
 # Someone the agent knows. Renamed from Contact — friendlier.
 
 soul:Friend a owl:Class ;
-    rdfs:subClassOf lex-o:Physical ;
-    lex-o:okfType "Friend" ;
+    git-lex:foldered true ;
     rdfs:label "Friend" ;
     rdfs:comment "A person or agent this agent knows." .
 
@@ -405,8 +401,7 @@ soul:notes a owl:DatatypeProperty ;
 # A daily log entry. One per agent day.
 
 soul:Journal a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Journal" ;
+    git-lex:foldered true ;
     rdfs:label "Journal" ;
     rdfs:comment "A daily log entry. The agent's record of what happened, what was learned, and what comes next." ;
     rdfs:subClassOf [
@@ -443,8 +438,7 @@ soul:emojimood a owl:DatatypeProperty ;
 # Freeform catch-all.
 
 soul:Note a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Note" ;
+    git-lex:foldered true ;
     rdfs:label "Note" ;
     rdfs:comment "Freeform knowledge capture. The catch-all." .
 
@@ -468,8 +462,7 @@ soul:relatedTo a owl:ObjectProperty ;
 # Something the agent can do. Tools, techniques, capabilities.
 
 soul:Skill a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Skill" ;
+    git-lex:foldered true ;
     rdfs:label "Skill" ;
     rdfs:comment "A capability the agent has — a tool, technique, or area of competence." ;
     rdfs:subClassOf [
@@ -530,8 +523,7 @@ soul:skillArgumentHint a owl:DatatypeProperty ;
 # subagent definitions (e.g. .claude/agents/ for Claude Code).
 
 soul:Subagent a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Subagent" ;
+    git-lex:foldered true ;
     rdfs:label "Subagent" ;
     rdfs:comment "A specialized agent the soul can spawn for focused tasks." .
 
@@ -570,8 +562,7 @@ soul:subagentMaxTurns a owl:DatatypeProperty ;
 # A new one might be auto-added to journal entries.
 
 soul:Mantra a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Mantra" ;
+    git-lex:foldered true ;
     rdfs:label "Mantra" ;
     rdfs:comment "A phrase, word, or seed the agent carries. Out-of-distribution thoughts. Personality fuel." .
 
@@ -588,8 +579,7 @@ soul:mantraId a owl:DatatypeProperty ;
 # A specialist's habits are domain-oriented (code review, test runs).
 
 soul:Habit a owl:Class ;
-    rdfs:subClassOf lex-o:Process ;
-    lex-o:okfType "Habit" ;
+    git-lex:foldered true ;
     rdfs:label "Habit" ;
     rdfs:comment "A recurring behavior the agent performs. Identity-level patterns, not one-off tasks." .
 
@@ -627,8 +617,7 @@ soul:habitStatus a owl:DatatypeProperty ;
 # An input the agent has saved. Papers, links, references.
 
 soul:Resource a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Resource" ;
+    git-lex:foldered true ;
     rdfs:label "Resource" ;
     rdfs:comment "An external input the agent has saved — paper, link, document, reference." .
 
@@ -654,8 +643,7 @@ soul:url a owl:DatatypeProperty ;
 # Something the agent has made. Outputs.
 
 soul:Creation a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Creation" ;
+    git-lex:foldered true ;
     rdfs:label "Creation" ;
     rdfs:comment "Something the agent has made — code, writing, art, an artifact." .
 
@@ -675,8 +663,7 @@ soul:creationType a owl:DatatypeProperty ;
 # A topic, theme, or hobby the agent cares about.
 
 soul:Interest a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Interest" ;
+    git-lex:foldered true ;
     rdfs:label "Interest" ;
     rdfs:comment "A topic, theme, or hobby the agent cares about. Personality surface area." .
 
@@ -693,8 +680,7 @@ soul:interestId a owl:DatatypeProperty ;
 # self plus a moment's affect. Identity and personality data.
 
 soul:Texture a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Texture" ;
+    git-lex:foldered true ;
     rdfs:label "Texture" ;
     rdfs:comment "A captured qualia — a sensory or emotional grain the agent noticed and wants to embody. Self, or self plus a moment's affect." .
 
@@ -731,8 +717,7 @@ soul:spark a owl:DatatypeProperty ;
 # prose with the eigenimage as the dreamt substance.
 
 soul:Dream a owl:Class ;
-    rdfs:subClassOf lex-o:Information ;
-    lex-o:okfType "Dream" ;
+    git-lex:foldered true ;
     rdfs:label "Dream" ;
     rdfs:comment "A literary frame for a previous-day eigenimage, composed in fresh context and delivered on next wake. Sleep-shape for creatures without sleep." ;
     rdfs:subClassOf [
