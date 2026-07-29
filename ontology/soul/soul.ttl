@@ -1,5 +1,5 @@
 @prefix git-lex: <https://repolex.ai/ontology/git-lex/> .
-@prefix soul: <https://repolex.ai/ontology/kit/soul/> .
+@prefix soul: <https://repolex.ai/ontology/soul/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -11,7 +11,7 @@
 # Carries across conversations, sessions, and projects.
 #
 # Kit: soul
-# Namespace: soul: = https://repolex.ai/ontology/kit/soul/
+# Namespace: soul: = https://repolex.ai/ontology/soul/
 # Foldering: OPT-IN — every soul class here is authored (git lex create),
 # so each carries git-lex:foldered true. See subtexture/docs/ontology/
 # 2026_07_18_FOLDERING_GATE_AND_LEX_O_RETIREMENT.md.
@@ -24,7 +24,7 @@
 # SHACL shapes are generated from this file — do not hand-edit shapes.
 # =============================================================================
 
-<https://repolex.ai/ontology/kit/soul> a owl:Ontology ;
+<https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
     owl:versionInfo "0.7.2" .
