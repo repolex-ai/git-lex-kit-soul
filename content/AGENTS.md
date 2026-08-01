@@ -79,8 +79,10 @@ name, the way you would any note you're leaving behind.
 When you write a document, a little bit of structure at the top (in YAML) tells
 your soul what kind of thing it is. The `create` command sets this up for you, so
 you rarely start from scratch. In the body, you can `@mention` peers and link
-related documents with `[[wikilinks]]` (use the full path, e.g.
-`[[Soul/Friend/w4r3z.md]]`).
+related documents with wikilinks — the full repo path wrapped in double square
+brackets, like [[SOUL.md]] (your identity document, right at the repo root). A
+link to a friend entry would wrap the path Soul/Friend/their-name.md the same
+way.
 
 ## Looking back, now and then
 
