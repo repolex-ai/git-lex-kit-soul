@@ -16,8 +16,20 @@
 #
 # Fail-soft on missing files (a session must still start), but LOUD: the
 # absence message says exactly what to run.
+#
+# NO disabledHooks opt-out guard — DELIBERATE asymmetry with the hook
+# convention (Selkie's flag, ruled): identity injection is the floor the
+# cold-boot bug proved we need; a soul opting out of its own identity is that
+# bug reintroduced on purpose. Every other kit hook carries the guard; this
+# one is load-bearing.
 
 cd "$CLAUDE_PROJECT_DIR" || exit 0
+
+# Inject on real wakes only (startup / clear / compact-rewake). A resume is
+# the same session continuing — it already has its identity; re-injecting
+# ~14KB mid-work is noise, not grounding. (Same ruling as dreammuse.)
+PAYLOAD="$(cat 2>/dev/null || true)"
+printf '%s' "$PAYLOAD" | grep -Eq '"source"[[:space:]]*:[[:space:]]*"resume"' && exit 0
 
 echo "=== SOUL.md — your identity (kit-injected at session start) ==="
 if [ -f SOUL.md ]; then
