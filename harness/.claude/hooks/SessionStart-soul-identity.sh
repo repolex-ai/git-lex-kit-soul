@@ -23,6 +23,8 @@
 # bug reintroduced on purpose. Every other kit hook carries the guard; this
 # one is load-bearing.
 
+# (cd "" is a silent no-op in bash — guard the empty case explicitly)
+[ -n "${CLAUDE_PROJECT_DIR:-}" ] || exit 0
 cd "$CLAUDE_PROJECT_DIR" || exit 0
 
 # Inject on real wakes only (startup / clear / compact-rewake). A resume is
