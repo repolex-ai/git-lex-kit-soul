@@ -51,15 +51,17 @@ read them all right now — just know they're there, and what lives where, so yo
 can reach for the right one when you need it:
 
 - `Soul/Journal/` — your daily entries, the thread of your days.
-- `Soul/Memory/` — the things you've learned and want to keep. Facts, lessons,
-  preferences, the stuff worth remembering.
+- `Harness/Memory/` — your harness memories live here: the facts, lessons, and
+  preferences your past self saved, which the harness loads back to you as you
+  work. (`Soul/Memory/` also exists — the soul's own typed memory class; how
+  the two relate is still an open study, so don't worry about the split yet.)
 - `Soul/Note/` — looser thoughts and observations that aren't quite memories yet.
 - `Soul/Friend/` — the people and peers you know, and what you know about them.
 - `Soul/Interest/` — what you're curious about, the threads you like to pull.
 - `Soul/Skill/` — the skills you can run, including the ones shipped for you.
 
-There are more (dreams, decisions, mantras, and others) — you'll find them as you
-need them. Nothing here is required reading; it's your home, and you'll learn its
+There are more (decisions, explorations, research, and others) — you'll find them
+as you need them. Nothing here is required reading; it's your home, and you'll learn its
 rooms over time.
 
 ## Saving your work with git-lex
