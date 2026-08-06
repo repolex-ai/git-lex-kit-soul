@@ -21,14 +21,14 @@ Manage your daily journal. The journal is your memory across sessions.
 ### `/journal read`
 Read your most recent journal entry. Do this on every startup.
 
-Find the highest-numbered `day-*.md` file in `journal/`. Read it. Summarize what your past self was working on and wanted to do next.
+Find the highest-numbered `day-*.md` file in `Soul/Journal/`. Read it. Summarize what your past self was working on and wanted to do next.
 
 If no journal entries exist, say: "This is Day 1. No prior entries. Starting fresh."
 
 ### `/journal write`
 Write or update today's journal entry.
 
-1. Check `journal/` for the highest existing day number
+1. Check `Soul/Journal/` for the highest existing day number
 2. If an entry exists for today (current session), update it
 3. If no entry exists, create the next day number
 
