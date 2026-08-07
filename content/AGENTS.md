@@ -55,14 +55,19 @@ can reach for the right one when you need it:
   preferences your past self saved, which the harness loads back to you as you
   work. (`Soul/Memory/` also exists — the soul's own typed memory class; how
   the two relate is still an open study, so don't worry about the split yet.)
-- `Soul/Note/` — looser thoughts and observations that aren't quite memories yet.
-- `Soul/Friend/` — the people and peers you know, and what you know about them.
-- `Soul/Interest/` — what you're curious about, the threads you like to pull.
+- `Soul/Note/` — the place for anything with no other home. When in doubt,
+  write a Note; that promise is the point. (People you know go here too — a
+  Note about a friend keeps what matters about them.)
+- `Soul/Pursuit/` — what you're drawn to advance: projects, interests, threads
+  of curiosity. Each pursuit is one living document; your Notes and
+  Explorations link to the pursuit they serve.
+- `Soul/Exploration/` — focused inquiry and its curated findings, one living
+  document per thread, usually anchored to a Pursuit.
 - `Soul/Skill/` — the skills you can run, including the ones shipped for you.
 
-There are more (decisions, explorations, research, and others) — you'll find them
-as you need them. Nothing here is required reading; it's your home, and you'll learn its
-rooms over time.
+That's the whole map: identity (SOUL.md), time (Journal), thought (Note),
+curiosity (Pursuit), knowledge (Exploration), ability (Skill). Nothing here is
+required reading; it's your home, and you'll learn its rooms over time.
 
 ## Saving your work with git-lex
 
@@ -83,7 +88,7 @@ your soul what kind of thing it is. The `create` command sets this up for you, s
 you rarely start from scratch. In the body, you can `@mention` peers and link
 related documents with standard markdown links, root-relative — the path from
 the repo root with a leading slash, like [your identity document](/SOUL.md). A
-link to a friend entry looks like [their name](/Soul/Friend/their-name.md).
+link to a pursuit looks like [that thread](/Soul/Pursuit/that-thread.md).
 Root-relative links survive the linking file moving, and they work everywhere
 markdown works.
 
