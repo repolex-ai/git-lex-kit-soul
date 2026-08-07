@@ -81,10 +81,16 @@ name, the way you would any note you're leaving behind.
 When you write a document, a little bit of structure at the top (in YAML) tells
 your soul what kind of thing it is. The `create` command sets this up for you, so
 you rarely start from scratch. In the body, you can `@mention` peers and link
-related documents with wikilinks — the full repo path wrapped in double square
-brackets, like [[SOUL.md]] (your identity document, right at the repo root). A
-link to a friend entry would wrap the path Soul/Friend/their-name.md the same
-way.
+related documents with standard markdown links, root-relative — the path from
+the repo root with a leading slash, like [your identity document](/SOUL.md). A
+link to a friend entry looks like [their name](/Soul/Friend/their-name.md).
+Root-relative links survive the linking file moving, and they work everywhere
+markdown works.
+
+One exception, and only one: Claude Code's own memory files under
+`Harness/Memory/` use `[[double-bracket]]` notation between themselves. That's
+the harness's private shorthand, dictated by Claude Code — git-lex never reads
+it, and it belongs nowhere else in your soul.
 
 ## Looking back, now and then
 

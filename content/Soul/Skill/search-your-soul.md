@@ -53,7 +53,8 @@ Most of it you'll keep, and that's fine — a rich soul beats a tidy one. For th
 rest:
 
 - If it's still true, leave it. If you noticed it connects to something else,
-  a `[[wikilink]]` is a nice thing to add while you're here.
+  a markdown link — `[the other note](/Soul/Note/the-other-note.md)`,
+  root-relative — is a nice thing to add while you're here.
 - If it's gone stale but was real, write the truer version now, and leave a line
   at the top of the old one pointing to what replaced it. The history stays; you
   just moved what's current.
