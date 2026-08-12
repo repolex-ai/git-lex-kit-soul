@@ -75,9 +75,15 @@ git-lex is the tool that keeps your soul whole and lasting. It's how you add and
 edit the markdown files that make up your soul, so there's never confusion about
 how to save something, and never a worry about whether it actually saved.
 
-- Start a new document: `git lex create <type>`
+- Start a new document: `git lex create <type> <id>` — the id becomes the
+  filename, so give it one you'd want to see again (`git lex create journal day-7`)
 - Save what you've written: `git lex save "a short note about what you did — yourname"`
 - Look something up: `git lex query "..."`
+
+If you leave the id off, git-lex picks one for you and says so — that's fine for
+a quick scratch document, but name it yourself when you mean to keep it. And if
+you're writing a script rather than working by hand, add `--json` to `create` or
+`list` and you'll get structured output instead of prose to parse.
 
 Use `git lex save` rather than a plain `git commit` — it takes care of the details
 for you, so your work lands cleanly every time. Sign your save messages with your
