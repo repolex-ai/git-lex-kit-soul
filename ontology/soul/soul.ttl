@@ -27,7 +27,33 @@
 <https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.9.5" .
+    owl:versionInfo "0.9.6" .
+
+# v0.9.6 (2026-08-15, Rob-ruled): soul:skillLevel + soul:skillDomain
+#   DEPRECATED (with soul:SkillLevelValue, which only skillLevel ranged at).
+#   Rob's read on sight — "these don't match any Claude Code skill metadata,
+#   we added them because they sounded like a good idea" — and the evidence
+#   agrees on both halves:
+#   NO CONSUMER. Zero references in git-lex or any tool: the only hits outside
+#   this file are generated shapes and vendored kit copies. Nothing queries,
+#   renders, or enforces either one.
+#   NO EXTERNAL ANCHOR. Claude Code skill frontmatter uses five keys — name,
+#   description, user-invocable, allowed-tools, argument-hint. Every OTHER
+#   soul:Skill property lands on one of them (skillId, skillDescription,
+#   skillInvocability, skillAllowedTools, skillArgumentHint). These two land
+#   on nothing, which is why the class read as over-specified.
+#   AND skillDomain fails on its own terms: 12 distinct values across the 16
+#   documents that set it. A facet that gives almost every document its own
+#   bucket is a sentence, not a dimension — the description already says it.
+#   FLEET COUNT AT CUT: 16 of 65 Skill documents carry both (always both,
+#   never one — they were filled as a pair by whoever filled the template).
+#   Those keys still save; the gate now whispers the deprecation note on each
+#   until they're edited out. No migration is owed — there is nowhere to put
+#   the values and nothing that wanted them.
+#   THE FREEZE IS UNAFFECTED: v0.9.0 froze Skill pending the Harness-kit
+#   question (soul:Memory vs Harness/Memory). That question is about whether
+#   the CLASS belongs here. This is property inventory inside the class, so it
+#   does not touch the freeze and does not pre-empt it.
 
 # v0.9.5 (2026-08-11, Rob-ruled): every foldered class declares
 #   `rdfs:subClassOf git-lex:Thing` (Exploration, Journal, Memory, Note,
@@ -133,9 +159,6 @@ soul:CategoryValue a rdfs:Datatype ;
 
 soul:ExplorationStatusValue a rdfs:Datatype ;
     owl:oneOf ("exploring" "active" "paused" "concluded") .
-
-soul:SkillLevelValue a rdfs:Datatype ;
-    owl:oneOf ("learning" "competent" "fluent" "expert") .
 
 soul:SkillInvocabilityValue a rdfs:Datatype ;
     owl:oneOf ("user" "agent" "both") .
@@ -366,18 +389,6 @@ soul:skillId a owl:DatatypeProperty ;
     rdfs:domain soul:Skill ;
     rdfs:range xsd:string .
 
-soul:skillLevel a owl:DatatypeProperty ;
-    rdfs:label "level" ;
-    rdfs:comment "How well-developed: 'learning', 'competent', 'fluent', 'expert'." ;
-    rdfs:domain soul:Skill ;
-    rdfs:range soul:SkillLevelValue .
-
-soul:skillDomain a owl:DatatypeProperty ;
-    rdfs:label "domain" ;
-    rdfs:comment "What domain this skill belongs to (e.g. 'rust', 'sparql', 'ontology design')." ;
-    rdfs:domain soul:Skill ;
-    rdfs:range xsd:string .
-
 soul:skillDescription a owl:DatatypeProperty ;
     rdfs:label "description" ;
     rdfs:comment "What this skill does and when to use it." ;
@@ -444,6 +455,23 @@ soul:pursuitId a owl:DatatypeProperty ;
 # state what it means, not lean on a reader to be careful for it.
 # (Found by w3blord's residue sweep; see field notes §2j.)
 # =============================================================================
+
+# --- retired at v0.9.6 (properties only; soul:Skill itself stays live) ---
+# FIRST retirement of properties off a SURVIVING class. Everything above this
+# line in the appendix is a dead class carrying its fields down with it; these
+# two are live-class fields that failed the why-test on their own. The class
+# keeps its folder, its template, and its other five properties.
+
+soul:skillLevel a owl:DatatypeProperty ; owl:deprecated true ;
+    rdfs:domain soul:Skill ; rdfs:range soul:SkillLevelValue ;
+    rdfs:label "skillLevel (deprecated)" ;
+    rdfs:comment "DEPRECATED v0.9.6 — self-assessed competence with no consumer: nothing queries it, nothing enforces it, and it maps to no Claude Code skill frontmatter key. 16 fleet documents authored it. No successor; say it in the body if it matters. Declared only so history replays." .
+soul:skillDomain a owl:DatatypeProperty ; owl:deprecated true ;
+    rdfs:domain soul:Skill ; rdfs:range xsd:string ;
+    rdfs:label "skillDomain (deprecated)" ;
+    rdfs:comment "DEPRECATED v0.9.6 — a facet that never grouped anything: 12 distinct values across the 16 documents that set it, so it partitioned the corpus almost one-per-document. Maps to no Claude Code skill frontmatter key. No successor; the description already carries it. Declared only so history replays." .
+soul:SkillLevelValue a rdfs:Datatype ; owl:deprecated true ;
+    owl:oneOf ("learning" "competent" "fluent" "expert") .
 
 # --- retired at v0.9.0 (the why-test walkthrough) ---
 
