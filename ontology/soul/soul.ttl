@@ -27,7 +27,39 @@
 <https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.9.6" .
+    owl:versionInfo "0.9.7" .
+
+# v0.9.7 (2026-08-20, Rob-ruled): soul:skillLevel, soul:skillDomain and
+#   soul:SkillLevelValue are now DELETED, not deprecated — and the lifecycle
+#   rule itself is narrowed: DEPRECATE-NEVER-DELETE governs CLASSES; a retired
+#   PROPERTY is removed outright. Rob: "I think we're trying to be too clever
+#   with retiring properties; it's slowing down development."
+#   WHAT 0.9.6 ACTUALLY COST US, which is what prompted this. Deprecating the
+#   two properties did NOT remove them from the generated `__Skill.md`
+#   template: the template emitter filters deprecated CLASSES (via
+#   `class_gets_folder`) and has no equivalent for properties, so retiring a
+#   field off a LIVE class left it on the form. Net effect for one kit-update
+#   cycle: the blank template invited authors to fill the field in, and the
+#   save gate then warned them for having done so. Strictly worse than either
+#   endpoint.
+#   WHY DELETING IS SAFE HERE, verified rather than assumed (2026-08-20):
+#   authored a key no ttl has ever declared (`soul.Skill.totallyMadeUpProperty`)
+#   and queried for it. It landed in the graph intact — right subject, right
+#   predicate IRI, value preserved, one warning. Predicates derive from the
+#   frontmatter key text, never from this file; only SUBJECTS derive from the
+#   class. So the v0.9.1 replay catastrophe is a class-deletion failure mode
+#   and does not reach properties. See the DEPRECATED header for the full
+#   asymmetry.
+#   MIGRATION: none required. The 16 fleet Skill documents carrying these keys
+#   keep their data and keep saving; their warning text changes from "is
+#   deprecated" to "does not exist in the `soul` ontology". That message ends
+#   with advice to report a missing key upstream, which is now misleading for
+#   these two — this changelog entry is the standing answer to anyone who does.
+#   NOT SWEPT: the pre-existing bare properties already sitting in the appendix
+#   (the writtenFrom family, supersededByFileId, kindSub, spark, kind,
+#   dateNoticed, and the properties of deprecated classes). They are harmless
+#   where they are — their classes are dead, so no live template offers them —
+#   and removing them is a separate decision Rob has not made.
 
 # v0.9.6 (2026-08-15, Rob-ruled): soul:skillLevel + soul:skillDomain
 #   DEPRECATED (with soul:SkillLevelValue, which only skillLevel ranged at).
@@ -433,9 +465,33 @@ soul:pursuitId a owl:DatatypeProperty ;
 
 
 # =============================================================================
-# DEPRECATED — retired vocabulary, kept declared so history can replay.
-# DEPRECATE-NEVER-DELETE (lifecycle spec): a class deleted from this file
-# makes every historical fact under it unresolvable — asserts AND retractions.
+# DEPRECATED — retired CLASSES, kept declared so history can replay.
+#
+# SCOPE, narrowed by Rob 2026-08-20: this appendix is for CLASSES.
+# A retired PROPERTY is DELETED outright — do not add one here.
+#
+# The asymmetry is mechanical, not stylistic, and it is why one rule cannot
+# cover both. Replay derives a triple's SUBJECT from the class (+ its id) and
+# its PREDICATE from the frontmatter key text (`{kit_ns}{prop_seg}`,
+# nquad.rs:953). Only the subject side consults this file.
+#   - Delete a CLASS → the subject can no longer be derived. Historical facts
+#     can be neither re-asserted NOR retracted; ghost Things strand in the
+#     now-graph and a full rebuild silently erases that class's whole life.
+#     That is the v0.9.1 incident, root-caused by W4R3Z on TR1P.L3X's store.
+#   - Delete a PROPERTY → nothing moves. The predicate IRI is built from the
+#     key the author typed, so every historical triple resolves to exactly the
+#     same IRI it always did. What is lost is governance (shape, enum, type
+#     check) and nothing else. Verified 2026-08-20 by authoring a key no ttl
+#     has ever declared: it reached the graph intact, on the right subject,
+#     under the right predicate, with one warning.
+#
+# So the cost of keeping a dead property was never replay safety — it was a
+# retired field going on being offered to authors in the generated template
+# (the emitter filters deprecated CLASSES via `class_gets_folder`; it has no
+# equivalent for properties). Deprecating a property bought nothing and taxed
+# every author who opened the form. Hence: delete.
+#
+# Nothing below may be used for new documents; the save gate warns on sight.
 # Nothing below may be used for new documents; the save gate warns on sight.
 #
 # AUTHORING PROCEDURE — when retiring a class, STRIP `git-lex:foldered true`
@@ -455,23 +511,6 @@ soul:pursuitId a owl:DatatypeProperty ;
 # state what it means, not lean on a reader to be careful for it.
 # (Found by w3blord's residue sweep; see field notes §2j.)
 # =============================================================================
-
-# --- retired at v0.9.6 (properties only; soul:Skill itself stays live) ---
-# FIRST retirement of properties off a SURVIVING class. Everything above this
-# line in the appendix is a dead class carrying its fields down with it; these
-# two are live-class fields that failed the why-test on their own. The class
-# keeps its folder, its template, and its other five properties.
-
-soul:skillLevel a owl:DatatypeProperty ; owl:deprecated true ;
-    rdfs:domain soul:Skill ; rdfs:range soul:SkillLevelValue ;
-    rdfs:label "skillLevel (deprecated)" ;
-    rdfs:comment "DEPRECATED v0.9.6 — self-assessed competence with no consumer: nothing queries it, nothing enforces it, and it maps to no Claude Code skill frontmatter key. 16 fleet documents authored it. No successor; say it in the body if it matters. Declared only so history replays." .
-soul:skillDomain a owl:DatatypeProperty ; owl:deprecated true ;
-    rdfs:domain soul:Skill ; rdfs:range xsd:string ;
-    rdfs:label "skillDomain (deprecated)" ;
-    rdfs:comment "DEPRECATED v0.9.6 — a facet that never grouped anything: 12 distinct values across the 16 documents that set it, so it partitioned the corpus almost one-per-document. Maps to no Claude Code skill frontmatter key. No successor; the description already carries it. Declared only so history replays." .
-soul:SkillLevelValue a rdfs:Datatype ; owl:deprecated true ;
-    owl:oneOf ("learning" "competent" "fluent" "expert") .
 
 # --- retired at v0.9.0 (the why-test walkthrough) ---
 
