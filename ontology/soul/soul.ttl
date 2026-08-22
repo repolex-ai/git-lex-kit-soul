@@ -38,12 +38,16 @@
 #   corpus predates the concept. Requiring it now would block saves in at least
 #   spaceGOAT's and W4R3Z's repos over vocabulary that did not exist yesterday.
 #   Declare → backfill → require, and the requiring is a separate Rob decision.
-#   VALUE FORM: bare pursuitId, NOT the bracketed address. That follows Rob's
-#   *ToId convention (concrete class range when the target class is known;
-#   git-lex:Thing only when open) and it has a production precedent —
-#   copia:lookMomentId ranges at copia:Moment on the authored, foldered
-#   copia:FamiliarLookNote and takes bare ids across hundreds of hand-written
-#   documents. See the block above the property for the author-facing seam.
+#   VALUE FORM: the BRACKETED address, <soul/Pursuit/x> — same as relatedToId.
+#   Rob, correcting this author directly: "anything ending in ToId WILL use
+#   bracketed addresses. That's the whole point." My first cut shipped it as a
+#   bare id off a concrete range and that was wrong; corrected before any
+#   document used it. Range is git-lex:Thing rather than the more precise
+#   soul:Pursuit for a sequencing reason, measured: under a concrete range
+#   today, a correctly-bracketed value silently emits as
+#   .../Pursuit/%3Csoul/Pursuit/x%3E. Narrow the range to soul:Pursuit in the
+#   same wave as W4R3Z's enforcement check, not before — do not ship a
+#   declaration whose reader does not exist yet.
 #   NOTE for the copia pass Rob flagged: copia has NO relatedTo*Id properties
 #   at all. Its reference family is the *Id shape (inGroupId, depictsId,
 #   sourceMomentId, lookMomentId…), and every concrete-range one of those sits
@@ -364,29 +368,44 @@ soul:explorationStatus a owl:DatatypeProperty ;
 # nobody had been given a chance to backfill. Declare now, backfill, require
 # later. The minCount goes on when Rob says the corpus is ready, not before.
 #
-# WHY THE VALUE IS A BARE ID AND NOT A BRACKETED ADDRESS — this differs from
-# git-lex:relatedToId on purpose, and the difference is the convention Rob set:
-# *ToId takes a CONCRETE class range when the target class is known, and
-# git-lex:Thing only when it is open. A concrete range puts the typing in the
-# PREDICATE, so repeating `soul/Pursuit/` inside every value would restate what
-# the property name already declares.
+# THE VALUE IS A BRACKETED ADDRESS (Rob, correcting me directly 2026-08-22):
+# "These new fields (anything ending in ToId) WILL use bracketed addresses.
+# That's the whole point." So this reads exactly like git-lex:relatedToId —
+# `<soul/Pursuit/x>` — and W4R3Z is building the check that enforces it.
 #
-# Not a new lane and not a guess: copia:FamiliarLookNote — foldered, authored,
-# a Thing — has carried copia:lookMomentId at `rdfs:range copia:Moment` through
-# hundreds of hand-written documents, and its authored form is a bare id
-# ("20260729-193605-b07fabe4"). Same machinery, in production, at scale.
+# WHY THE RANGE SAYS Thing AND NOT Pursuit, which is the more specific and
+# therefore the more tempting declaration. Because a CONCRETE class range is
+# currently the code's signal for the OPPOSITE lane — Law 6, "the value is the
+# target's bare id" — and under it a correctly-bracketed value is silently
+# mangled. Measured, not feared: with `rdfs:range soul:Pursuit` declared, the
+# value `<soul/Pursuit/ontology-and-metaphysics>` emitted as
 #
-# So the two reference shapes an author meets are:
-#   soul.Exploration.relatedToPursuitId: "aesthetics-and-the-painted-figure"
-#   soul.Exploration.relatedToId:        <soul/Pursuit/aesthetics-and-the-painted-figure>
-# One names the class in the KEY, the other in the VALUE. Both are correct and
-# they are not interchangeable — flagged here because that is the exact seam a
-# tired author gets wrong at 2am.
+#   https://repolex.ai/soul/Pursuit/%3Csoul/Pursuit/ontology-and-metaphysics%3E
+#
+# — brackets percent-encoded into the identifier, the wreckage glued under the
+# range class, no error and no warning. That is the same shape as the bare-value
+# path-lane bug (subtexture 2026_08_18), reappearing from the other direction.
+#
+# So declaring the more precise range TODAY would make every value written
+# correctly per Rob's rule land wrong. `rdfs:range git-lex:Thing` is true (a
+# Pursuit IS a Thing), it selects the angle-bracket lane that already exists and
+# already BLOCKS every other form with the fix named (git-lex 65286a9), and it
+# gives up only the class-level narrowing.
+#
+# NARROW TO soul:Pursuit in the SAME wave as W4R3Z's enforcement check, never
+# before it — the ordering law from the range=Thing rollout: do not ship a
+# declaration whose reader does not exist yet.
+#
+# NOTE ON THE SUFFIX RULE, for whoever builds that check: `relatedToPursuitId`
+# does NOT end in "ToId" — it ends in "PursuitId". A literal endsWith("ToId")
+# catches git-lex:relatedToId and MISSES every typed edge in the family it was
+# written for. Key the check off the declared range, as W4R3Z already said the
+# code should ("keys off the declared range only, never the name").
 soul:relatedToPursuitId a owl:ObjectProperty ;
     rdfs:label "relatedToPursuitId" ;
-    rdfs:comment "The Pursuit this Exploration advances — value is the target's bare pursuitId, not a path. Multi-valued — one YAML list item each; do not repeat the key." ;
+    rdfs:comment "The Pursuit this Exploration advances, written <soul/Pursuit/identifier>. Multi-valued — one YAML list item each; do not repeat the key." ;
     rdfs:domain soul:Exploration ;
-    rdfs:range soul:Pursuit .
+    rdfs:range git-lex:Thing .
 
 soul:hypothesis a owl:DatatypeProperty ;
     rdfs:label "hypothesis" ;
