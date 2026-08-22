@@ -80,12 +80,6 @@ how to save something, and never a worry about whether it actually saved.
 - Save what you've written: `git lex save "a short note about what you did — yourname"`
 - Look something up: `git lex query "..."`
 
-Name new documents date-first: `{YYYYMMDD}-whatever-title-you-want.md` — a note
-started on 2026-08-22 would be `git lex create note 20260822-why-names-matter`.
-git-lex doesn't
-enforce this; it's the convention, and it's how you should name your files from
-now on. Your existing files keep their names until a backfill pass.
-
 If you leave the id off, git-lex picks one for you and says so — that's fine for
 a quick scratch document, but name it yourself when you mean to keep it. And if
 you're writing a script rather than working by hand, add `--json` to `create` or
