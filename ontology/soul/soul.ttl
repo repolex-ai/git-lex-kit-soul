@@ -27,7 +27,22 @@
 <https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.9.7" .
+    owl:versionInfo "0.9.8" .
+
+# v0.9.8 (2026-08-22): comment-only — the 0.9.7 delete-don't-deprecate rule
+#   gains the exception it always needed. 0.9.7 said deleting a property costs
+#   "governance and nothing else." That is true of ORDINARY properties and
+#   FALSE of identity properties: `derive_file_subjects` gates the per-class
+#   anchor on the declared property set (nquad.rs:483), so deleting
+#   `soul:noteId` would silently demote every convention-anchored Note from the
+#   Thing plane to the File plane. Found while reviewing Rob's universal-id
+#   rollout — the wave that eventually deletes noteId et al. — and confirmed in
+#   code by W4R3Z. The rule now reads: property deletion is safe because
+#   nothing reads the declaration, EXCEPT where something does, and identity is
+#   where something does. Precondition for that future wave, recorded here so
+#   it cannot be waved through: zero documents fleet-wide anchored by per-class
+#   id alone, MEASURED on the day, and the fallback lane removed from the code
+#   in the same commit. No term added, removed, or re-ranged.
 
 # v0.9.7 (2026-08-20, Rob-ruled): soul:skillLevel, soul:skillDomain and
 #   soul:SkillLevelValue are now DELETED, not deprecated — and the lifecycle
@@ -478,12 +493,38 @@ soul:pursuitId a owl:DatatypeProperty ;
 #     can be neither re-asserted NOR retracted; ghost Things strand in the
 #     now-graph and a full rebuild silently erases that class's whole life.
 #     That is the v0.9.1 incident, root-caused by W4R3Z on TR1P.L3X's store.
-#   - Delete a PROPERTY → nothing moves. The predicate IRI is built from the
-#     key the author typed, so every historical triple resolves to exactly the
-#     same IRI it always did. What is lost is governance (shape, enum, type
-#     check) and nothing else. Verified 2026-08-20 by authoring a key no ttl
-#     has ever declared: it reached the graph intact, on the right subject,
-#     under the right predicate, with one warning.
+#   - Delete an ORDINARY PROPERTY → nothing moves. The predicate IRI is built
+#     from the key the author typed, so every historical triple resolves to
+#     exactly the same IRI it always did. What is lost is governance (shape,
+#     enum, type check). Verified 2026-08-20 by authoring a key no ttl has ever
+#     declared: it reached the graph intact, on the right subject, under the
+#     right predicate, with one warning.
+#
+# THE EXCEPTION, and it is the whole reason this paragraph got rewritten one
+# day after it shipped: **property deletion is safe because nothing READS the
+# declaration — except where something does, and identity is where something
+# does.**
+#
+# An `<class>Id` property is not ordinary. `derive_file_subjects` gates the
+# convention lane on the declared property set (`nquad.rs:483`): if
+# `soul:noteId` is not declared, every Note that anchors by convention returns
+# File-only subjects — `thing_uri: None`. Not an error, not a lost field. The
+# document's whole fact set silently demotes from the Thing plane to the File
+# plane, which is the v0.9.1 shape wearing a property's clothes.
+#
+# So an id property may only be deleted once NOTHING depends on the convention
+# lane, and that is a MEASUREMENT, never a judgement call: zero documents
+# fleet-wide still anchored by per-class id alone, checked on the day of the
+# cut. W4R3Z adds the other half — the same commit must remove the fallback
+# LANE from the code, so ontology and reader can never disagree about whether
+# the convention still exists. (Confirmed in code by W4R3Z 2026-08-22, after
+# this author asserted the unqualified version here on 2026-08-20 and shipped
+# it. The warning text for the demotion had already fired in front of me during
+# an unrelated probe the same day; I read it and did not connect it.)
+#
+# The general lesson, worth more than the specific rule: when a safety property
+# rests on "nothing reads X," the work is enumerating the readers — not
+# restating the property with more confidence.
 #
 # So the cost of keeping a dead property was never replay safety — it was a
 # retired field going on being offered to authors in the generated template
