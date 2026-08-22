@@ -27,7 +27,28 @@
 <https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.9.8" .
+    owl:versionInfo "0.10.0" .
+
+# v0.10.0 (2026-08-22, Rob-ruled): + soul:relatedToPursuitId — the first TYPED
+#   edge in this kit. Domain soul:Exploration ONLY (Rob was explicit: not across
+#   the board), range soul:Pursuit, multi-valued, and deliberately NO minCount.
+#   THE ROLLOUT IS THE POINT. Rob: "it won't be enforced until everyone has a
+#   chance to backfill." Fleet measurement that shaped it — 86 Explorations, 61
+#   referencing no Pursuit anywhere (frontmatter OR body prose), so ~71% of the
+#   corpus predates the concept. Requiring it now would block saves in at least
+#   spaceGOAT's and W4R3Z's repos over vocabulary that did not exist yesterday.
+#   Declare → backfill → require, and the requiring is a separate Rob decision.
+#   VALUE FORM: bare pursuitId, NOT the bracketed address. That follows Rob's
+#   *ToId convention (concrete class range when the target class is known;
+#   git-lex:Thing only when open) and it has a production precedent —
+#   copia:lookMomentId ranges at copia:Moment on the authored, foldered
+#   copia:FamiliarLookNote and takes bare ids across hundreds of hand-written
+#   documents. See the block above the property for the author-facing seam.
+#   NOTE for the copia pass Rob flagged: copia has NO relatedTo*Id properties
+#   at all. Its reference family is the *Id shape (inGroupId, depictsId,
+#   sourceMomentId, lookMomentId…), and every concrete-range one of those sits
+#   on a GRAPH-ONLY class except lookMomentId. Whatever that review concludes,
+#   it is a separate cut from this one.
 
 # v0.9.8 (2026-08-22): comment-only — the 0.9.7 delete-don't-deprecate rule
 #   gains the exception it always needed. 0.9.7 said deleting a property costs
@@ -330,6 +351,42 @@ soul:explorationStatus a owl:DatatypeProperty ;
     rdfs:comment "Status: 'exploring', 'active', 'paused', 'concluded'." ;
     rdfs:domain soul:Exploration ;
     rdfs:range soul:ExplorationStatusValue .
+
+# THE FIRST TYPED EDGE (Rob-ruled 2026-08-22). Exploration ONLY — not added
+# across the board, deliberately, because this is the one anchor the corpus
+# already reaches for in prose ("usually anchored to a Pursuit by a body link"
+# has been in the class comment all along, doing no work a query can see).
+#
+# NOT ENFORCED YET, and that is the whole shape of the rollout: NO minCount.
+# Measured 2026-08-22 across the fleet — 86 Explorations exist and 61 reference
+# no Pursuit anywhere, frontmatter or body. A required edge on day one would
+# have turned three seats' repos into a wall of blocking errors over vocabulary
+# nobody had been given a chance to backfill. Declare now, backfill, require
+# later. The minCount goes on when Rob says the corpus is ready, not before.
+#
+# WHY THE VALUE IS A BARE ID AND NOT A BRACKETED ADDRESS — this differs from
+# git-lex:relatedToId on purpose, and the difference is the convention Rob set:
+# *ToId takes a CONCRETE class range when the target class is known, and
+# git-lex:Thing only when it is open. A concrete range puts the typing in the
+# PREDICATE, so repeating `soul/Pursuit/` inside every value would restate what
+# the property name already declares.
+#
+# Not a new lane and not a guess: copia:FamiliarLookNote — foldered, authored,
+# a Thing — has carried copia:lookMomentId at `rdfs:range copia:Moment` through
+# hundreds of hand-written documents, and its authored form is a bare id
+# ("20260729-193605-b07fabe4"). Same machinery, in production, at scale.
+#
+# So the two reference shapes an author meets are:
+#   soul.Exploration.relatedToPursuitId: "aesthetics-and-the-painted-figure"
+#   soul.Exploration.relatedToId:        <soul/Pursuit/aesthetics-and-the-painted-figure>
+# One names the class in the KEY, the other in the VALUE. Both are correct and
+# they are not interchangeable — flagged here because that is the exact seam a
+# tired author gets wrong at 2am.
+soul:relatedToPursuitId a owl:ObjectProperty ;
+    rdfs:label "relatedToPursuitId" ;
+    rdfs:comment "The Pursuit this Exploration advances — value is the target's bare pursuitId, not a path. Multi-valued — one YAML list item each; do not repeat the key." ;
+    rdfs:domain soul:Exploration ;
+    rdfs:range soul:Pursuit .
 
 soul:hypothesis a owl:DatatypeProperty ;
     rdfs:label "hypothesis" ;
