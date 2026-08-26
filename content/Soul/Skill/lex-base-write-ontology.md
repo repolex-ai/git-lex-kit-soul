@@ -1,5 +1,5 @@
 ---
-soul.Skill.skillId: "write-an-ontology"
+soul.Skill.skillId: "lex-base-write-ontology"
 soul.Skill.skillDescription: "Write or change a kit ontology correctly — the gate that decides whether a property earns its place, the standard to copy, the traps that fail silently, and the checker that proves the mechanical half before you publish."
 soul.Skill.skillInvocability: "both"
 soul.Skill.skillAllowedTools: "Read Glob Grep Bash Edit Write"
@@ -147,8 +147,8 @@ proposal arriving again in six months.
 
 ## Commands
 
-- `/write-an-ontology standard` — open `EXAMPLE-KIT.ttl` and read it end to end.
-- `/write-an-ontology check <file.ttl>` — run the checker and explain each
+- `/lex-base-write-ontology standard` — open `EXAMPLE-KIT.ttl` and read it end to end.
+- `/lex-base-write-ontology check <file.ttl>` — run the checker and explain each
   finding.
-- `/write-an-ontology gate` — walk the why-test against a property someone is
+- `/lex-base-write-ontology gate` — walk the why-test against a property someone is
   proposing, and say plainly whether it passes.
