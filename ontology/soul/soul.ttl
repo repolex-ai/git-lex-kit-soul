@@ -27,7 +27,7 @@
 <https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.11.0" .
+    owl:versionInfo "0.11.1" .
 
 # v0.10.0 (2026-08-22, Rob-ruled): + soul:relatedToPursuitId — the first TYPED
 #   edge in this kit. Domain soul:Exploration ONLY (Rob was explicit: not across

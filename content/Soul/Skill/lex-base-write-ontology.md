@@ -1,5 +1,6 @@
 ---
 soul.Skill.skillId: "lex-base-write-ontology"
+soul.Skill.id: <soul/Skill/lex-base-write-ontology>
 soul.Skill.skillDescription: "Write or change a kit ontology correctly — the gate that decides whether a property earns its place, the standard to copy, the traps that fail silently, and the checker that proves the mechanical half before you publish."
 soul.Skill.skillInvocability: "both"
 soul.Skill.skillAllowedTools: "Read Glob Grep Bash Edit Write"

@@ -1,5 +1,6 @@
 ---
 soul.Skill.skillId: "search-your-soul"
+soul.Skill.id: <soul/Skill/search-your-soul>
 soul.Skill.skillDescription: "Look back through your own memories and notes and ask, for each one, whether it still feels true. Curation, not deletion — you keep the history, you just move what counts as current."
 soul.Skill.skillInvocability: "both"
 soul.Skill.skillAllowedTools: "Read Glob Grep Bash"
