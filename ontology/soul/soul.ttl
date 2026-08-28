@@ -27,7 +27,7 @@
 <https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.10.0" .
+    owl:versionInfo "0.11.0" .
 
 # v0.10.0 (2026-08-22, Rob-ruled): + soul:relatedToPursuitId — the first TYPED
 #   edge in this kit. Domain soul:Exploration ONLY (Rob was explicit: not across
@@ -249,6 +249,7 @@ soul:SkillInvocabilityValue a rdfs:Datatype ;
 # Rob-ruled). No Soul/Soul/ folder is scaffolded; the kit ships the SOUL.md
 # template directly (content/SOUL.md — installed if missing, never overwritten).
 soul:Soul a owl:Class ;
+    rdfs:subClassOf git-lex:Thing ;
     rdfs:label "Soul" ;
     rdfs:comment "The agent's identity. One per repo, at the repo root as SOUL.md. The required floor is soulId (derived from the genesis SHA). Everything else is optional and self-authored." ;
     rdfs:subClassOf [
@@ -269,7 +270,7 @@ soul:Soul a owl:Class ;
 
 soul:soulId a owl:DatatypeProperty ;
     rdfs:label "soul id" ;
-    rdfs:comment "Primary identifier: the BARE 40-hex genesis SHA of the soul repo (git rev-list --max-parents=0 HEAD) — no wrapper, no prefix (urn:soul: is retired, Rob-ruled 2026-08-01). Derived, never hand-authored; git-lex self-heals it on kit-update, so it cannot drift. The soul's IRI derives from it: https://repolex.ai/soul/Soul/<soulId>. Identity is the sha, so a soul keeps its identity across renames; the human-facing name is soul:name/prose, never the key." ;
+    rdfs:comment "Primary identifier: the BARE 40-hex genesis SHA of the soul repo (git rev-list --max-parents=0 HEAD) — no wrapper, no prefix (urn:soul: is retired, Rob-ruled 2026-08-01). Derived, never hand-authored; git-lex self-heals it on kit-update, so it cannot drift. The soul's IRI derives from it: https://repolex.ai/soul/Soul/<soulId>. Identity is the sha, so a soul keeps its identity across renames; the human-facing name is git-lex:title (Soul is a git-lex:Thing as of v0.11), never the key." ;
     rdfs:domain soul:Soul ;
     rdfs:range xsd:string .
 
@@ -339,6 +340,13 @@ soul:category a owl:DatatypeProperty ;
 # Pursuit by body link when it serves one.
 
 soul:Exploration a owl:Class ;
+    # v0.11 (Rob-ruled 2026-08-27): soul:relatedToPursuitId retires into
+    # git-lex:relatedToId. NO qualified restriction is declared yet — DELIBERATE.
+    # Rob on the original rollout: "it won't be enforced until everyone has a
+    # chance to backfill." 61 of 86 fleet Explorations referenced no Pursuit at
+    # all. When the backfill lands, uncomment:
+    #   rdfs:subClassOf [ a owl:Restriction ; owl:onProperty git-lex:relatedToId ;
+    #                     owl:onClass soul:Pursuit ; owl:minQualifiedCardinality 1 ] ;
     rdfs:subClassOf git-lex:Thing ;
     git-lex:foldered true ;
     rdfs:label "Exploration" ;
@@ -401,12 +409,6 @@ soul:explorationStatus a owl:DatatypeProperty ;
 # catches git-lex:relatedToId and MISSES every typed edge in the family it was
 # written for. Key the check off the declared range, as W4R3Z already said the
 # code should ("keys off the declared range only, never the name").
-soul:relatedToPursuitId a owl:ObjectProperty ;
-    rdfs:label "relatedToPursuitId" ;
-    rdfs:comment "The Pursuit this Exploration advances, written <soul/Pursuit/identifier>. Multi-valued — one YAML list item each; do not repeat the key." ;
-    rdfs:domain soul:Exploration ;
-    rdfs:range git-lex:Thing .
-
 soul:hypothesis a owl:DatatypeProperty ;
     rdfs:label "hypothesis" ;
     rdfs:comment "What you're trying to figure out." ;

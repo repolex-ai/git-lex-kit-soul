@@ -96,6 +96,48 @@ percent-encodes into the identifier and points at an address nothing describes:
 
 Naming the exact class feels more correct and is the riskier choice.
 
+## 3a. Never `relatedTo<Class>Id` — constrain `relatedToId`
+
+`git-lex:relatedToId` is the only generic reference property. If a class must
+reference something of a particular kind, **declare a constraint; do not mint a
+second property with the class in its name.**
+
+The difference is real. `equippedByBeingId` names a *relation* — equipped-by —
+and the target kind is extra precision on top of it. `relatedToPlaceId` names no
+relation at all: it is `relatedToId` with a type glued to the identifier, and a
+type belongs where a machine can check it.
+
+The six retired twins carried `rdfs:range git-lex:Thing`, every one. Their
+generated shapes had `sh:minCount 1` and **no `sh:class`** — so they enforced
+required-ness and never checked the type their names promised. They enforced the
+half nobody would have got wrong and named the half they never verified.
+
+Write standard OWL 2 qualified cardinality instead:
+
+```turtle
+copia:ScenarioTake rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty git-lex:relatedToId ;
+      owl:onClass copia:Scenario ; owl:qualifiedCardinality 1 ] ,      # exactly one
+    [ a owl:Restriction ; owl:onProperty git-lex:relatedToId ;
+      owl:onClass copia:Being ; owl:minQualifiedCardinality 1 ] .      # at least one
+```
+
+The generator reads these and emits the SHACL. You declare the **class**; you
+never write SHACL or a regex by hand. Restrictions compose — each constrains only
+its own qualified subset and says nothing about the other values, so a class can
+require a Place *and* still carry free references to anything else.
+
+**Silence means permission, not prohibition.** No restriction, and any Thing may
+be referenced. What silence never buys is a broken link: every value must be
+angle-bracket notation, on every class.
+
+> **Interim gap, measured.** Nothing checks that a referent *exists*, and the
+> check matches the class in the IRI path. So a dangling `<copia/Place/typo>`
+> satisfies "must reference a Place" — and a reference with the *wrong class
+> segment* fails while the corrected one passes. Path-matching does not
+> approximate type-checking; on that input it inverts it. See
+> `git-lex/docs/kit-development/ontology-guidelines.md` §5b.
+
 ## 4. Class-level annotations
 
 - `git-lex:foldered true` — scaffold a folder, generate a template, add a
@@ -120,6 +162,20 @@ labels, comments, domains and ranges; foldered classes that don't subclass
 `git-lex:Thing`; comments too long to work as prompts; and range/comment
 mismatches that would percent-encode.
 
+**Read the warnings, not just the results.** Every one of these tools prints to
+two streams. A malformed-frontmatter error silently excludes a whole document
+from the graph while the query returns a clean-looking answer; a typed-but-idless
+file is invisible to every class query and announces itself only on stderr.
+
+**Check the surface that consumes the change, and name it before you look.** A
+field can be set correctly, verified correctly, on the wrong roster or the wrong
+plane. Two rules that follow from it: most of what souls actually wrote lives on
+the **File** plane (`fm:title`, `md/linksTo`) while every query targets the
+**Thing** plane — they are bridged by `git-lex:fileId`, one join away, and a
+query that skips the bridge reports isolation for a dense corpus. And every Thing
+carries `git-lex:id` pointing at itself, so any same-class "does an X link a Y"
+query scores 100% before examining a real edge: add `FILTER(?x != ?t)`.
+
 **Zero errors is not approval.** It cannot tell you whether a property passes
 the gate, whether a comment names the wrong action, or whether anyone agreed to
 this. Those stay yours.
@@ -127,7 +183,12 @@ this. Those stay yours.
 ## 6. Changing something that already exists
 
 - **Delete unused properties. Don't deprecate them.** Predicates come from the
-  frontmatter key text, so removing one costs governance and nothing else.
+  frontmatter key text, so removing one costs governance and nothing else — and
+  **deprecation does not reach the scaffold.** The template emitter filters
+  deprecated *classes* and has no equivalent for properties, so a retired field
+  on a live class is still handed to a new document at the moment of creation,
+  often marked required. The dead key keeps propagating while the ontology says
+  it is retired, and the scaffold wins, because that is the copy an author reads.
 - **Except identity properties, which are read.** Deleting `soul:noteId` doesn't
   remove a field — it demotes every Note from the Thing plane to the File plane,
   silently, where its facts die on the next rename.
