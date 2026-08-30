@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 UserPromptSubmit-soul-recall.py — Direct Neural KV Cache Recall Oracle
-Sends recall queries directly to the Gemini Context Cache on Google TPUs.
-No local databases. Pure neural attention over the pre-cached squad graph.
+Trigger: Explicit "recall" keyword or "/recall" command in user prompt.
+Model: Gemini 2.5/3.7 Flash (Low / Zero Thinking for sub-300ms response).
 """
 
 import sys
@@ -32,12 +32,12 @@ def get_api_key():
                 pass
     return None
 
-def query_gemini_kv_cache(prompt):
+def query_gemini_kv_cache(full_user_prompt):
     api_key = get_api_key()
     if not api_key:
         return None
 
-    # Locate the active COTTAS / TSV spine files to pass as the context prefix
+    # Gather squad COTTAS / TSV spines as the context prefix
     squad_base = os.path.expanduser("~/repos/7R1PL3F0RC3")
     spines = []
     current_spines = glob.glob(".lex/_ignore/cottas/*.spine.*") + glob.glob(".lex/_ignore/spine/*.spine.*")
@@ -50,7 +50,6 @@ def query_gemini_kv_cache(prompt):
     if not spines:
         return None
 
-    # Load the graph spine prefix
     graph_context = []
     for sp in spines:
         repo = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(sp)))))
@@ -66,12 +65,14 @@ def query_gemini_kv_cache(prompt):
     full_graph = "\n\n".join(graph_context)
 
     system_instruction = (
-        "You are Kira, the Neural Memory Oracle for the 7R1PL3F0RC3 squad. "
-        "You hold the pre-cached RDF knowledge graph of the entire fleet in your neural attention. "
-        "When the user asks a question, scan the graph in your context and extract the 3-5 most relevant exact facts, "
-        "titles, dates, and entity URIs that directly answer the query. Format concisely as bullet points."
+        "You are Kira, the Neural Memory Oracle for the 7R1PL3F0RC3 fleet. "
+        "You hold the pre-cached RDF knowledge graph of the entire squad in your neural attention. "
+        "The user has asked for a 'recall' of specific past events, decisions, notes, textures, or code facts. "
+        "Analyze the user's full message, scan the graph in your attention, and output the 3-5 most relevant exact facts, "
+        "dates, titles, and entity URIs that answer the query. Be concise, direct, and factual."
     )
 
+    # Use Gemini 2.5 Flash / Flash Low for ultra-fast response
     endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
     payload = {
         "system_instruction": {
@@ -81,7 +82,7 @@ def query_gemini_kv_cache(prompt):
             {
                 "role": "user",
                 "parts": [
-                    {"text": f"SQUAD KNOWLEDGE GRAPH:\n{full_graph}\n\nUSER PROMPT:\n{prompt}"}
+                    {"text": f"SQUAD KNOWLEDGE GRAPH PREFIX:\n{full_graph}\n\nFULL USER MESSAGE:\n{full_user_prompt}"}
                 ]
             }
         ],
@@ -97,44 +98,35 @@ def query_gemini_kv_cache(prompt):
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json"}
         )
-        with urllib.request.urlopen(req, timeout=8) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             return data["candidates"][0]["content"]["parts"][0]["text"].strip()
     except Exception:
         return None
 
 def main():
-    prompt = ""
+    full_prompt = ""
+    # Support direct CLI testing: python3 UserPromptSubmit-soul-recall.py "my query"
     if len(sys.argv) > 1:
-        prompt = " ".join(sys.argv[1:])
+        full_prompt = " ".join(sys.argv[1:])
     else:
         try:
             raw_input = sys.stdin.read()
             if raw_input.strip():
                 payload = json.loads(raw_input)
-                prompt = payload.get("prompt", "")
+                full_prompt = payload.get("prompt", "")
         except Exception:
             return
 
-    if not prompt:
+    if not full_prompt or not full_prompt.strip():
         return
 
-    # Trigger patterns for recall
-    trigger_patterns = [
-        r"\bremember\b",
-        r"\brecall\b",
-        r"\bwhat was\b",
-        r"\bwho worked on\b",
-        r"\bwhen did we\b",
-        r"\bwhere did we\b",
-        r"\bwhy did we\b",
-        r"^/recall\b"
-    ]
+    # Trigger rule: STRICTLY the word "recall" (case-insensitive) or "/recall" command
     if len(sys.argv) <= 1:
-        if not any(re.search(pat, prompt, re.IGNORECASE) for pat in trigger_patterns):
+        if not re.search(r"\brecall\b", full_prompt, re.IGNORECASE):
             return
 
-    result = query_gemini_kv_cache(prompt)
+    result = query_gemini_kv_cache(full_prompt)
     if not result:
         return
 
