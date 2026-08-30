@@ -1,0 +1,6 @@
+soul.Skill.id | hasValue | <soul/Skill/lex-base-write-ontology>
+soul.Skill.skillAllowedTools | hasValue | Read Glob Grep Bash Edit Write
+soul.Skill.skillArgumentHint | hasValue | [standard|check <file.ttl>|gate]
+soul.Skill.skillDescription | hasValue | Write or change a kit ontology correctly — the gate that decides whether a property earns its place, the standard to copy, the traps that fail silently, and the checker that proves the mechanical half before you publish.
+soul.Skill.skillId | hasValue | lex-base-write-ontology
+soul.Skill.skillInvocability | hasValue | both

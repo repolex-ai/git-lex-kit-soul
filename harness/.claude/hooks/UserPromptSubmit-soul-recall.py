@@ -73,7 +73,7 @@ def query_gemini_kv_cache(full_user_prompt):
     )
 
     # Use Gemini 2.5 Flash / Flash Low for ultra-fast response
-    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={api_key}"
     payload = {
         "system_instruction": {
             "parts": [{"text": system_instruction}]

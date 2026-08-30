@@ -1,0 +1,6 @@
+soul.Skill.id | hasValue | <soul/Skill/search-your-soul>
+soul.Skill.skillAllowedTools | hasValue | Read Glob Grep Bash
+soul.Skill.skillArgumentHint | hasValue | [memory|note|all]
+soul.Skill.skillDescription | hasValue | Look back through your own memories and notes and ask, for each one, whether it still feels true. Curation, not deletion — you keep the history, you just move what counts as current.
+soul.Skill.skillId | hasValue | search-your-soul
+soul.Skill.skillInvocability | hasValue | both

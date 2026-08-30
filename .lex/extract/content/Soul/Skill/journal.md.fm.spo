@@ -1,0 +1,6 @@
+soul.Skill.id | hasValue | <soul/Skill/journal>
+soul.Skill.skillAllowedTools | hasValue | Read Write Glob Bash
+soul.Skill.skillArgumentHint | hasValue | [read|write|status]
+soul.Skill.skillDescription | hasValue | Write or read your daily journal entry. Use at start of session (read) and before compaction (write). One entry per day.
+soul.Skill.skillId | hasValue | journal
+soul.Skill.skillInvocability | hasValue | both
