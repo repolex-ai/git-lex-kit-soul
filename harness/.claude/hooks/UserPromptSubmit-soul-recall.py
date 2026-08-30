@@ -4,51 +4,50 @@ import json
 import re
 import os
 import glob
-import difflib
+import sqlite3
 
-def extract_ngrams(text, n=3):
-    text = f"  {text.lower()}  "
-    return set(text[i:i+n] for i in range(len(text) - n + 1))
+def get_fts_db_for_spine(spine_path):
+    db_path = spine_path + ".fts.db"
+    try:
+        spine_mtime = os.path.getmtime(spine_path)
+        if os.path.exists(db_path):
+            db_mtime = os.path.getmtime(db_path)
+            if db_mtime >= spine_mtime:
+                return db_path
+    except Exception:
+        pass
 
-def ngram_similarity(set1, set2):
-    if not set1 or not set2:
-        return 0.0
-    return len(set1 & set2) / len(set1 | set2)
-
-def fuzzy_word_match(query_words, text_lower, query_ngrams):
-    score = 0.0
-    text_words = set(re.findall(r"\b[a-zA-Z0-9_\-]+\b", text_lower))
-    
-    for q_word in query_words:
-        if q_word in text_lower:
-            score += 1.0  # Exact match
-        else:
-            # Fuzzy match against individual words in text
-            close = difflib.get_close_matches(q_word, text_words, n=1, cutoff=0.75)
-            if close:
-                score += 0.8
-            else:
-                # Trigram fallback for morphological variants
-                q_ng = query_ngrams.get(q_word)
-                if q_ng:
-                    for t_word in text_words:
-                        if len(t_word) >= 3 and abs(len(t_word) - len(q_word)) <= 3:
-                            t_ng = extract_ngrams(t_word)
-                            sim = ngram_similarity(q_ng, t_ng)
-                            if sim >= 0.55:
-                                score += sim * 0.75
-                                break
-    return score
+    # Build or rebuild SQLite FTS5 database with trigram tokenizer
+    try:
+        if os.path.exists(db_path):
+            os.remove(db_path)
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+        cur.execute("CREATE VIRTUAL TABLE facts USING fts5(fact, tokenize=\"trigram\");")
+        
+        batch = []
+        with open(spine_path, "r", encoding="utf-8", errors="ignore") as f:
+            for line in f:
+                l = line.strip()
+                if l.startswith("|") and not l.startswith("| SUBJECT"):
+                    batch.append((l,))
+                    if len(batch) >= 10000:
+                        cur.executemany("INSERT INTO facts VALUES (?)", batch)
+                        batch = []
+        if batch:
+            cur.executemany("INSERT INTO facts VALUES (?)", batch)
+        conn.commit()
+        conn.close()
+        return db_path
+    except Exception:
+        return None
 
 def query_spines(prompt):
-    # Extract candidate search keywords
-    stop_words = {"remember", "recall", "about", "there", "where", "which", "could", "would", "should", "talking", "talked", "what", "when", "with", "from", "that", "this", "have", "were"}
+    stop_words = {"remember", "recall", "about", "there", "where", "which", "could", "would", "should", "talking", "talked", "what", "when", "with", "from", "that", "this", "have", "were", "tell", "show"}
     raw_tokens = re.findall(r"\b[a-zA-Z0-9_\-]{3,}\b", prompt)
     words = [w.lower() for w in raw_tokens if w.lower() not in stop_words]
     if not words:
         return []
-
-    word_ngrams = {w: extract_ngrams(w) for w in words}
 
     # Locate COTTAS spine files in current repo and sibling squad repos
     candidate_spines = []
@@ -66,34 +65,47 @@ def query_spines(prompt):
     matched_facts = []
     seen = set()
 
+    # Build FTS trigram query
+    trigram_clauses = []
+    for word in words:
+        if len(word) >= 3:
+            tgs = [word[i:i+3] for i in range(len(word)-2)]
+            if tgs:
+                trigram_clauses.append(" OR ".join(f'"{tg}"' for tg in tgs))
+        else:
+            trigram_clauses.append(f'"{word}"')
+
+    if not trigram_clauses:
+        return []
+
+    fts_query = " OR ".join(trigram_clauses)
+
     for spine_path in candidate_spines:
         repo_name = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(spine_path)))))
+        db_path = get_fts_db_for_spine(spine_path)
+        if not db_path:
+            continue
+
         try:
-            with open(spine_path, "r", encoding="utf-8", errors="ignore") as f:
-                for line in f:
-                    line_clean = line.strip()
-                    if not line_clean.startswith("|") or line_clean.startswith("| SUBJECT"):
-                        continue
-                    line_lower = line_clean.lower()
-                    
-                    score = fuzzy_word_match(words, line_lower, word_ngrams)
-                    if score >= 0.75:
-                        if line_clean not in seen:
-                            seen.add(line_clean)
-                            matched_facts.append((score, repo_name, line_clean))
+            conn = sqlite3.connect(db_path)
+            cur = conn.cursor()
+            rows = cur.execute("SELECT fact, bm25(facts) FROM facts WHERE facts MATCH ? ORDER BY rank LIMIT 8;", (fts_query,)).fetchall()
+            for fact, rank in rows:
+                if fact not in seen:
+                    seen.add(fact)
+                    matched_facts.append((rank, repo_name, fact))
+            conn.close()
         except Exception:
             continue
 
-    matched_facts.sort(key=lambda x: x[0], reverse=True)
+    matched_facts.sort(key=lambda x: x[0])  # Lower BM25 score = higher relevance
     return matched_facts[:8]
 
 def main():
     prompt = ""
-    # Support direct CLI invocation: python3 UserPromptSubmit-soul-recall.py "query"
     if len(sys.argv) > 1:
         prompt = " ".join(sys.argv[1:])
     else:
-        # Standard Claude Code hook stdin JSON invocation
         try:
             raw_input = sys.stdin.read()
             if raw_input.strip():
@@ -105,7 +117,6 @@ def main():
     if not prompt:
         return
 
-    # If called via hook stdin, check trigger intents
     if len(sys.argv) <= 1:
         trigger_patterns = [
             r"\bremember\b",
