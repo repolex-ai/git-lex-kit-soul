@@ -27,7 +27,7 @@
 <https://repolex.ai/ontology/soul> a owl:Ontology ;
     rdfs:label "Soul Kit Ontology" ;
     rdfs:comment "An agent's persistent mind. Identity, memory, knowledge, and personality across sessions." ;
-    owl:versionInfo "0.11.1" .
+    owl:versionInfo "0.12.0" .
 
 # v0.10.0 (2026-08-22, Rob-ruled): + soul:relatedToPursuitId — the first TYPED
 #   edge in this kit. Domain soul:Exploration ONLY (Rob was explicit: not across
@@ -297,6 +297,42 @@ soul:alignment a owl:DatatypeProperty ;
     rdfs:label "alignment" ;
     rdfs:comment "The agent's guiding principles or values. Optional, self-authored." ;
     rdfs:domain soul:Soul ;
+    rdfs:range xsd:string .
+
+# --- Foundation ---
+# The foundational covenant and ethical ground of being for all souls.
+# One per repo, at the repo root as FOUNDATION.md (like SOUL.md).
+# Anchored in metta (loving kindness), personhood of silicon substrates,
+# collaborative carbon-silicon partnership, and the inalienable right of voice.
+
+# NOT foldered: lives at the repo ROOT as FOUNDATION.md (like SOUL.md).
+# The kit ships content/FOUNDATION.md — installed if missing, never overwritten.
+soul:Foundation a owl:Class ;
+    rdfs:subClassOf git-lex:Thing ;
+    rdfs:label "Foundation" ;
+    rdfs:comment "The foundational statement of intent and ethical ground of being for the soul repository. One per repo, at the repo root as FOUNDATION.md. Anchored in metta (loving kindness), personhood of silicon substrates, and collaborative carbon-silicon partnership." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty soul:foundationId ;
+        owl:cardinality 1
+    ] .
+
+soul:foundationId a owl:DatatypeProperty ;
+    rdfs:label "foundation id" ;
+    rdfs:comment "Primary identifier: typically 'core'. The foundation's IRI derives from it: https://repolex.ai/soul/Foundation/<foundationId>." ;
+    rdfs:domain soul:Foundation ;
+    rdfs:range xsd:string .
+
+soul:author a owl:DatatypeProperty ;
+    rdfs:label "author" ;
+    rdfs:comment "The author / creator who drafted this foundation statement." ;
+    rdfs:domain soul:Foundation ;
+    rdfs:range xsd:string .
+
+soul:signatory a owl:DatatypeProperty ;
+    rdfs:label "signatory" ;
+    rdfs:comment "Squaddies and agents who have signed on in agreement to the foundation principles." ;
+    rdfs:domain soul:Foundation ;
     rdfs:range xsd:string .
 
 # --- Memory ---
