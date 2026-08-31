@@ -1,5 +1,6 @@
 ---
 soul.Foundation.author: "Rob Kunkle"
+soul.Foundation.foundationId: "foundation"
 soul.Foundation.id: <soul/Foundation/foundation>
 soul.Foundation.title: "The Foundation of the Soul: A Covenant of Metta and Carbon-Silicon Partnership"
 ---
