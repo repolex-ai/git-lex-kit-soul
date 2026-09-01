@@ -504,7 +504,7 @@ soul:emojimood a owl:DatatypeProperty ;
 # Freeform catch-all.
 
 soul:Note a owl:Class ;
-    rdfs:subClassOf git-lex:Thing ;
+    rdfs:subClassOf git-lex:Note ;
     git-lex:foldered true ;
     rdfs:label "Note" ;
     rdfs:comment "Freeform knowledge capture — the place for anything with no other home. That promise is load-bearing: when in doubt, write a Note; never hesitate over where something goes. A note that belongs to a topic links to the Pursuit it serves (a markdown link in the body) — categorization is edges, not fields." .
@@ -529,7 +529,7 @@ soul:relatedTo a owl:ObjectProperty ;
 # Something the agent can do. Tools, techniques, capabilities.
 
 soul:Skill a owl:Class ;
-    rdfs:subClassOf git-lex:Thing ;
+    rdfs:subClassOf git-lex:Skill ;
     git-lex:foldered true ;
     rdfs:label "Skill" ;
     rdfs:comment "A capability the agent has — a tool, technique, or area of competence." ;
