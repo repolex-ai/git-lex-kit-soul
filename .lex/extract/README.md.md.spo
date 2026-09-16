@@ -1,0 +1,4 @@
+md.externalLink | hasValue | https://github.com/repolex-ai/git-lex
+md.externalLink | hasValue | https://github.com/repolex-ai/git-lex/blob/main/docs/index.md
+md.externalLink | hasValue | https://github.com/repolex-ai/git-lex/blob/main/docs/kit-development/kit-authoring.md
+md.externalLink | hasValue | https://github.com/repolex-ai/git-lex/blob/main/docs/kit-development/ontology-guidelines.md
