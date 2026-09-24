@@ -1,0 +1,4 @@
+# WRITE ONCE. NEVER MODIFY. Soul identity anchor.
+# If you accidentally delete this file, the next `git lex sync`
+# will recompute and rewrite it from the genesis commit.
+genesis_sha: 506b623b1bcb7a79160634802c1aa1aab5d056d0
