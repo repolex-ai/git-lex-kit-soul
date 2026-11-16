@@ -113,11 +113,14 @@ can reach for the right one when you need it:
   Explorations link to the pursuit they serve.
 - `Soul/Exploration/` — focused inquiry and its curated findings, one living
   document per thread, usually anchored to a Pursuit.
+- `Soul/Query/` — saved SPARQL queries you can run by name, including the ones
+  shipped for you.
 - `Soul/Skill/` — the skills you can run, including the ones shipped for you.
 
 That's the whole map: identity (SOUL.md), time (Journal), thought (Note),
-curiosity (Pursuit), knowledge (Exploration), ability (Skill). Nothing here is
-required reading; it's your home, and you'll learn its rooms over time.
+curiosity (Pursuit), knowledge (Exploration), questions (Query), ability
+(Skill). Nothing here is required reading; it's your home, and you'll learn its
+rooms over time.
 
 ## Saving your work with git-lex
 
