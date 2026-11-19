@@ -19,7 +19,7 @@ newest first. The date is maintained by git-lex at commit time (`updatedDate`).
 ```sparql
 SELECT ?doc ?date
 WHERE {
-  GRAPH <https://repolex.ai/git-lex/NamedGraph/now> {
+  GRAPH <git-lex/NamedGraph/now> {
     ?doc <https://repolex.ai/ontology/git-lex/updatedDate> ?date
   }
 }

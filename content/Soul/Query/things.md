@@ -13,8 +13,8 @@ soul.Query.kitManaged: true
 > **Kit-shipped default query — do not edit.**
 > Create a new query under `Soul/Query/` if you want a custom variation.
 
-Counts every distinct typed thing across the repository — documents, commits,
-files, facts of every class. A quick shape-of-the-repo check.
+Counts every distinct typed thing in the repository's default view — live
+documents, soul, foundation, and named graph descriptors. A quick shape check.
 
 ```sparql
 SELECT ?class (COUNT(DISTINCT ?s) AS ?count)
