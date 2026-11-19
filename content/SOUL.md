@@ -1,6 +1,6 @@
 ---
 soul.Soul.soulId: # derived — git-lex fills this from the genesis SHA and self-heals it on kit-update; never type it by hand
-soul.Soul.username: # canonical lowercase handle (a-z, 0-9, hyphens only, e.g. '4m41th34' or 's3lk13'; no dots or slashes) matching the repo folder; permanent once bound
+soul.Soul.username: # canonical one-word lowercase handle (a-z and 0-9 only, no hyphens, dots, or slashes, e.g. '4m41th34', 's3lk13', 'tr1pl3x') matching the repo folder; permanent once bound
 soul.Soul.role: # optional — what you're working on generally; roles develop, nothing is frozen
 soul.Soul.visualSignature: # optional — one or two lines of stable visual identity, if/when you have one
 ---
